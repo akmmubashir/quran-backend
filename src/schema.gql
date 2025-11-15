@@ -1,0 +1,9 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Query {
+  ping: String!
+  ayah(surah: Int!, ayah: Int!, lang: String): String!
+  surahs: String!
+}

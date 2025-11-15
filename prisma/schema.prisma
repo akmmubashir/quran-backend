@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Surah {
+  id             Int      @id @default(autoincrement())
+  number         Int      @unique
+  name_ar        String
+  name_en        String?
+  revelation     String?
+  total_ayahs    Int
+  ayahs          Ayah[]
+  createdAt      DateTime @default(now())
+}
+
+model Ayah {
+  id           Int          @id @default(autoincrement())
+  surah        Surah        @relation(fields: [surahId], references: [id])
+  surahId      Int
+  ayah_number  Int
+  text_ar      String       @db.Text
+  translations Translation[]
+  tafsirs      Tafsir[]
+  createdAt    DateTime     @default(now())
+
+  @@unique([surahId, ayah_number])
+}
+
+model Translation {
+  id            Int      @id @default(autoincrement())
+  ayah          Ayah     @relation(fields: [ayahId], references: [id])
+  ayahId        Int
+  language_code String
+  translator    String?
+  text          String   @db.Text
+  createdAt     DateTime @default(now())
+
+  @@index([language_code])
+}
+
+model Tafsir {
+  id            Int      @id @default(autoincrement())
+  ayah          Ayah     @relation(fields: [ayahId], references: [id])
+  ayahId        Int
+  language_code String
+  scholar       String?
+  source        String?
+  text          String   @db.Text
+  createdAt     DateTime @default(now())
+
+  @@index([language_code])
+}
