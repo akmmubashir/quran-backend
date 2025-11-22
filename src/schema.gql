@@ -2,8 +2,42 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Translation {
+  id: Int!
+  language_code: String!
+  translator: String
+  text: String!
+}
+
+type Tafsir {
+  id: Int!
+  language_code: String!
+  scholar: String
+  source: String
+  text: String!
+}
+
+type Ayah {
+  id: Int!
+  ayah_number: Int!
+  text_ar: String!
+  translations: [Translation!]
+  tafsirs: [Tafsir!]
+}
+
+type Surah {
+  id: Int!
+  number: Int!
+  name_ar: String!
+  name_en: String
+  revelation: String
+  total_ayahs: Int!
+  ayahs: [Ayah!]
+}
+
 type Query {
   ping: String!
-  ayah(surah: Int!, ayah: Int!, lang: String): String!
-  surahs: String!
+  ayah(surah: Int!, ayah: Int!, lang: String): Ayah
+  surah(number: Int!, includeAyahs: Boolean = true, lang: String): Surah
+  surahs: [Surah!]!
 }

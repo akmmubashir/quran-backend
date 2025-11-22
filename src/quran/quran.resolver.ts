@@ -1,5 +1,6 @@
 import { Resolver, Query, Args, Int } from '@nestjs/graphql';
 import { QuranService } from './quran.service';
+import { Ayah, Surah } from './quran.types';
 
 @Resolver()
 export class QuranResolver {
@@ -10,20 +11,27 @@ export class QuranResolver {
     return 'pong';
   }
 
-  @Query(() => String)
+  @Query(() => Ayah, { nullable: true })
   async ayah(
     @Args('surah', { type: () => Int }) surah: number,
     @Args('ayah', { type: () => Int }) ayah: number,
-    @Args('lang', { type: () => String, nullable: true }) lang?: string
+    @Args('lang', { type: () => String, nullable: true }) lang?: string,
   ) {
-    const res = await this.service.getAyah(surah, ayah, lang);
-    // Return JSON string for now (you'll create GraphQL types next)
-    return JSON.stringify(res);
+    return this.service.getAyah(surah, ayah, lang);
   }
 
-  @Query(() => String)
+  @Query(() => Surah, { nullable: true })
+  async surah(
+    @Args('number', { type: () => Int }) number: number,
+    @Args('includeAyahs', { type: () => Boolean, nullable: true, defaultValue: true })
+    includeAyahs?: boolean,
+    @Args('lang', { type: () => String, nullable: true }) lang?: string,
+  ) {
+    return this.service.getSurah(number, includeAyahs, lang);
+  }
+
+  @Query(() => [Surah])
   async surahs() {
-    const s = await this.service.listSurahs();
-    return JSON.stringify(s);
+    return this.service.listSurahs();
   }
 }

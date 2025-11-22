@@ -5,13 +5,216 @@
     "name_en": "Al-Fatihah",
     "revelation": "Makkah",
     "ayahs": [
-      { "ayah_number": 1, "text_ar": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ" },
-      { "ayah_number": 2, "text_ar": "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ" },
-      { "ayah_number": 3, "text_ar": "الرَّحْمَٰنِ الرَّحِيمِ" },
-      { "ayah_number": 4, "text_ar": "مَالِكِ يَوْمِ الدِّينِ" },
-      { "ayah_number": 5, "text_ar": "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ" },
-      { "ayah_number": 6, "text_ar": "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ" },
-      { "ayah_number": 7, "text_ar": "صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ..." }
+      {
+        "ayah_number": 1,
+        "text_ar": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
+        "translations": [
+          {
+            "language_code": "en",
+            "translator": "Sahih International",
+            "text": "In the name of Allah, the Entirely Merciful, the Especially Merciful."
+          },
+          {
+            "language_code": "ml",
+            "translator": "Muhammad Karakunnu",
+            "text": "ദയാമയനും കരുണാനിധിയുമായ അല്ലാഹുവിന്റെ നാമത്തില്‍."
+          }
+        ],
+        "tafsirs": [
+          {
+            "language_code": "en",
+            "scholar": "Ibn Kathir",
+            "source": "Tafsir Ibn Kathir",
+            "text": "The meaning of Bismillah is: I start my action with the Name of Allah, seeking help through His Name, so that my action may be blessed. Allah is a Name of the Greatest Lord, the One Who is worshiped. Ar-Rahman (the Entirely Merciful) and Ar-Rahim (the Especially Merciful) are two names derived from Ar-Rahmah (mercy), but Rahman has more meanings that pertain to Allah, the Exalted."
+          },
+          {
+            "language_code": "ml",
+            "scholar": "Ibn Kathir",
+            "source": "Tafsir Ibn Kathir",
+            "text": "ബിസ്മില്ലാഹിന്റെ അര്‍ത്ഥം: അല്ലാഹുവിന്റെ നാമത്തില്‍ ഞാന്‍ എന്റെ പ്രവൃത്തി ആരംഭിക്കുന്നു, അവന്റെ നാമത്തിലൂടെ സഹായം തേടുന്നു, അങ്ങനെ എന്റെ പ്രവൃത്തിക്ക് അനുഗ്രഹം ലഭിക്കട്ടെ. അല്ലാഹു എന്നത് ഏറ്റവും വലിയ രക്ഷിതാവിന്റെ നാമമാണ്, ആരാധിക്കപ്പെടുന്നവന്‍. അര്‍-റഹ്മാന്‍ (പൂര്‍ണ്ണമായി കരുണാമയന്‍) എന്നും അര്‍-റഹീം (പ്രത്യേകിച്ചും കരുണാമയന്‍) എന്നും രണ്ട് നാമങ്ങള്‍ അര്‍-റഹ്മ (കരുണ) എന്നതില്‍ നിന്ന് ഉരുത്തിരിഞ്ഞവയാണ്."
+          }
+        ]
+      },
+      {
+        "ayah_number": 2,
+        "text_ar": "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
+        "translations": [
+          {
+            "language_code": "en",
+            "translator": "Sahih International",
+            "text": "[All] praise is [due] to Allah, Lord of the worlds."
+          },
+          {
+            "language_code": "ml",
+            "translator": "Muhammad Karakunnu",
+            "text": "ലോകങ്ങളുടെ രക്ഷിതാവായ അല്ലാഹുവിന് സകല സ്തുതിയും."
+          }
+        ],
+        "tafsirs": [
+          {
+            "language_code": "en",
+            "scholar": "Ibn Kathir",
+            "source": "Tafsir Ibn Kathir",
+            "text": "Al-Hamd means gratitude and is used to praise Allah for what He has done and what He will do. 'Rabb' means the Owner, the One Who takes care of and sustains. 'Al-Alamin' is plural of 'Alam', which refers to everything in existence except Allah. The word 'Alam' is applied to humans, Jinns, angels, animals and everything that has a soul."
+          },
+          {
+            "language_code": "ml",
+            "scholar": "Ibn Kathir",
+            "source": "Tafsir Ibn Kathir",
+            "text": "അല്‍-ഹംദ് എന്നതിന്‍റെ അര്‍ത്ഥം കൃതജ്ഞതയാണ്, അല്ലാഹു ചെയ്തതിനും ചെയ്യാന്‍ പോകുന്നതിനും അവനെ സ്തുതിക്കാന്‍ ഉപയോഗിക്കുന്നു. 'റബ്' എന്നതിന്‍റെ അര്‍ത്ഥം ഉടമ, പരിപാലിക്കുകയും പോഷിപ്പിക്കുകയും ചെയ്യുന്നവന്‍. 'അല്‍-ആലമീന്‍' എന്നത് 'ആലം' എന്നതിന്റെ ബഹുവചനമാണ്, അല്ലാഹു ഒഴികെയുള്ള നിലനില്‍ക്കുന്ന എല്ലാത്തിനെയും സൂചിപ്പിക്കുന്നു."
+          }
+        ]
+      },
+      {
+        "ayah_number": 3,
+        "text_ar": "الرَّحْمَٰنِ الرَّحِيمِ",
+        "translations": [
+          {
+            "language_code": "en",
+            "translator": "Sahih International",
+            "text": "The Entirely Merciful, the Especially Merciful."
+          },
+          {
+            "language_code": "ml",
+            "translator": "Muhammad Karakunnu",
+            "text": "ദയാമയനും കരുണാനിധിയുമായവന്‍."
+          }
+        ],
+        "tafsirs": [
+          {
+            "language_code": "en",
+            "scholar": "Ibn Kathir",
+            "source": "Tafsir Ibn Kathir",
+            "text": "Allah mentions two of His Attributes of perfection: Ar-Rahman and Ar-Rahim. Ar-Rahman indicates that Allah has the quality of mercy for all His creation, while Ar-Rahim indicates that Allah has the quality of mercy specifically for the believers."
+          },
+          {
+            "language_code": "ml",
+            "scholar": "Ibn Kathir",
+            "source": "Tafsir Ibn Kathir",
+            "text": "അല്ലാഹു തന്‍റെ പൂര്‍ണ്ണതയുടെ രണ്ട് ഗുണങ്ങള്‍ പരാമര്‍ശിക്കുന്നു: അര്‍-റഹ്മാന്‍ എന്നും അര്‍-റഹീം എന്നും. അര്‍-റഹ്മാന്‍ എന്നത് അല്ലാഹുവിന് തന്‍റെ സകല സൃഷ്ടികള്‍ക്കും കരുണയുടെ ഗുണമുണ്ടെന്ന് സൂചിപ്പിക്കുന്നു, അതേസമയം അര്‍-റഹീം എന്നത് അല്ലാഹുവിന് പ്രത്യേകിച്ചും വിശ്വാസികള്‍ക്ക് കരുണയുടെ ഗുണമുണ്ടെന്ന് സൂചിപ്പിക്കുന്നു."
+          }
+        ]
+      },
+      {
+        "ayah_number": 4,
+        "text_ar": "مَالِكِ يَوْمِ الدِّينِ",
+        "translations": [
+          {
+            "language_code": "en",
+            "translator": "Sahih International",
+            "text": "Sovereign of the Day of Recompense."
+          },
+          {
+            "language_code": "ml",
+            "translator": "Muhammad Karakunnu",
+            "text": "പ്രതിഫലദിനത്തിന്റെ അധിപന്‍."
+          }
+        ],
+        "tafsirs": [
+          {
+            "language_code": "en",
+            "scholar": "Ibn Kathir",
+            "source": "Tafsir Ibn Kathir",
+            "text": "Allah is the Master of the Day of Judgment, the Day when all creation will be recompensed for their deeds. This Ayah reminds people that they will be held accountable for their actions."
+          },
+          {
+            "language_code": "ml",
+            "scholar": "Ibn Kathir",
+            "source": "Tafsir Ibn Kathir",
+            "text": "അല്ലാഹു വിധിദിനത്തിന്റെ യജമാനനാണ്, സകല സൃഷ്ടികളും തങ്ങളുടെ പ്രവൃത്തികള്‍ക്ക് പ്രതിഫലം ലഭിക്കുന്ന ദിവസം. ഈ ആയത്ത് ആളുകളെ അവരുടെ പ്രവൃത്തികള്‍ക്ക് ഉത്തരവാദിത്തം ചുമത്തപ്പെടുമെന്ന് ഓര്‍മ്മപ്പെടുത്തുന്നു."
+          }
+        ]
+      },
+      {
+        "ayah_number": 5,
+        "text_ar": "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
+        "translations": [
+          {
+            "language_code": "en",
+            "translator": "Sahih International",
+            "text": "It is You we worship and You we ask for help."
+          },
+          {
+            "language_code": "ml",
+            "translator": "Muhammad Karakunnu",
+            "text": "നിന്നെയാണ് ഞങ്ങള്‍ ആരാധിക്കുന്നത്, നിന്നോടാണ് ഞങ്ങള്‍ സഹായം തേടുന്നത്."
+          }
+        ],
+        "tafsirs": [
+          {
+            "language_code": "en",
+            "scholar": "Ibn Kathir",
+            "source": "Tafsir Ibn Kathir",
+            "text": "This Ayah establishes that we worship Allah alone and seek help from Him alone. It is a declaration of Tawhid (monotheism) and a rejection of Shirk (associating partners with Allah)."
+          },
+          {
+            "language_code": "ml",
+            "scholar": "Ibn Kathir",
+            "source": "Tafsir Ibn Kathir",
+            "text": "ഈ ആയത്ത് നമ്മള്‍ അല്ലാഹുവിനെ മാത്രം ആരാധിക്കുകയും അവനോട് മാത്രം സഹായം തേടുകയും ചെയ്യുന്നുവെന്ന് സ്ഥാപിക്കുന്നു. ഇത് തൗഹീദിന്റെ (ഏകീകരണത്തിന്റെ) പ്രഖ്യാപനവും ഷിർക്കിന്റെ (അല്ലാഹുവിനോട് പങ്കാളികളെ ചേര്‍ക്കുന്നതിന്റെ) നിരാകരണവുമാണ്."
+          }
+        ]
+      },
+      {
+        "ayah_number": 6,
+        "text_ar": "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ",
+        "translations": [
+          {
+            "language_code": "en",
+            "translator": "Sahih International",
+            "text": "Guide us to the straight path."
+          },
+          {
+            "language_code": "ml",
+            "translator": "Muhammad Karakunnu",
+            "text": "നേര്‍വഴിയിലേക്ക് ഞങ്ങളെ നയിക്കുക."
+          }
+        ],
+        "tafsirs": [
+          {
+            "language_code": "en",
+            "scholar": "Ibn Kathir",
+            "source": "Tafsir Ibn Kathir",
+            "text": "We ask Allah to guide us to the straight path, which is Islam, the clear way without any crookedness. This is a supplication to Allah to keep us firm on the path of guidance."
+          },
+          {
+            "language_code": "ml",
+            "scholar": "Ibn Kathir",
+            "source": "Tafsir Ibn Kathir",
+            "text": "നമ്മള്‍ അല്ലാഹുവോട് നേര്‍വഴിയിലേക്ക് നയിക്കണമെന്ന് അഭ്യര്‍ത്ഥിക്കുന്നു, അത് ഇസ്‌ലാമാണ്, എന്തെങ്കിലും വളഞ്ഞതില്ലാത്ത വ്യക്തമായ വഴി. നയനത്തിന്റെ വഴിയില്‍ നമ്മളെ ഉറപ്പിച്ച് നില്‍ക്കാന്‍ അല്ലാഹുവോട് പ്രാര്‍ത്ഥിക്കുന്നതാണ്."
+          }
+        ]
+      },
+      {
+        "ayah_number": 7,
+        "text_ar": "صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+        "translations": [
+          {
+            "language_code": "en",
+            "translator": "Sahih International",
+            "text": "The path of those upon whom You have bestowed favor, not of those who have evoked [Your] anger or of those who are astray."
+          },
+          {
+            "language_code": "ml",
+            "translator": "Muhammad Karakunnu",
+            "text": "നീ അനുഗ്രഹിച്ചവരുടെ വഴിയില്‍, നിന്‍റെ കോപത്തിന് ഇരയായവരുടെയും വഴിപിഴച്ചവരുടെയും വഴിയിലല്ല."
+          }
+        ],
+        "tafsirs": [
+          {
+            "language_code": "en",
+            "scholar": "Ibn Kathir",
+            "source": "Tafsir Ibn Kathir",
+            "text": "We ask Allah to guide us to the path of those upon whom He has bestowed His favor: the Prophets, the truthful, the martyrs, and the righteous. We also ask to avoid the path of those who have earned His anger (the Jews) and those who are astray (the Christians)."
+          },
+          {
+            "language_code": "ml",
+            "scholar": "Ibn Kathir",
+            "source": "Tafsir Ibn Kathir",
+            "text": "നമ്മള്‍ അല്ലാഹുവോട് അവന്‍ അനുഗ്രഹിച്ചവരുടെ വഴിയിലേക്ക് നയിക്കണമെന്ന് അഭ്യര്‍ത്ഥിക്കുന്നു: പ്രവാചകര്‍, സത്യവാദികള്‍, ശഹീദുകള്‍, നീതിമാന്‍മാര്‍. അവന്റെ കോപത്തിന് ഇരയായവരുടെ (യഹൂദരുടെ) വഴിയും വഴിപിഴച്ചവരുടെ (ക്രിസ്ത്യാനികളുടെ) വഴിയും ഒഴിവാക്കണമെന്നും നമ്മള്‍ അഭ്യര്‍ത്ഥിക്കുന്നു."
+          }
+        ]
+      }
     ]
   }
 ]

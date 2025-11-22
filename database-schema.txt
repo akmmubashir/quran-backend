@@ -1,0 +1,102 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    QURAN DATABASE SCHEMA DIAGRAM                             ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              TABLE: Surah                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  Column          │ Type      │ Constraints        │ Description              │
+├──────────────────┼───────────┼────────────────────┼──────────────────────────┤
+│  id              │ INT       │ PK, AUTO_INCREMENT │ Unique identifier       │
+│  number          │ INT       │ UNIQUE, NOT NULL   │ Surah number (1-114)     │
+│  name_ar         │ VARCHAR   │ NOT NULL           │ Arabic name             │
+│  name_en         │ VARCHAR   │ NULLABLE           │ English name             │
+│  revelation      │ VARCHAR   │ NULLABLE           │ Makkah/Madinah           │
+│  total_ayahs     │ INT       │ NOT NULL           │ Total ayahs count        │
+│  createdAt       │ TIMESTAMP │ DEFAULT NOW()      │ Creation timestamp      │
+└─────────────────────────────────────────────────────────────────────────────┘
+                              │
+                              │ 1:N (One Surah has Many Ayahs)
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              TABLE: Ayah                                     │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  Column          │ Type      │ Constraints        │ Description              │
+├──────────────────┼───────────┼────────────────────┼──────────────────────────┤
+│  id              │ INT       │ PK, AUTO_INCREMENT │ Unique identifier       │
+│  surahId         │ INT       │ FK → Surah.id      │ Parent surah reference   │
+│  ayah_number     │ INT       │ NOT NULL           │ Ayah number in surah     │
+│  text_ar         │ TEXT      │ NOT NULL           │ Arabic text             │
+│  createdAt       │ TIMESTAMP │ DEFAULT NOW()      │ Creation timestamp      │
+├──────────────────┴───────────┴────────────────────┴──────────────────────────┤
+│  UNIQUE CONSTRAINT: (surahId, ayah_number)                                   │
+└─────────────────────────────────────────────────────────────────────────────┘
+                              │
+                ┌─────────────┴─────────────┐
+                │                           │
+                │ 1:N                       │ 1:N
+                │                           │
+                ▼                           ▼
+┌──────────────────────────────┐  ┌──────────────────────────────┐
+│      TABLE: Translation      │  │       TABLE: Tafsir          │
+├──────────────────────────────┤  ├──────────────────────────────┤
+│  Column          │ Type      │  │  Column          │ Type      │
+├──────────────────┼───────────┤  ├──────────────────┼───────────┤
+│  id              │ INT (PK)  │  │  id              │ INT (PK)  │
+│  ayahId          │ INT (FK)  │  │  ayahId          │ INT (FK)  │
+│  language_code   │ VARCHAR    │  │  language_code   │ VARCHAR   │
+│                 │ INDEXED    │  │                 │ INDEXED   │
+│  translator      │ VARCHAR   │  │  scholar         │ VARCHAR   │
+│                 │ NULLABLE  │  │                 │ NULLABLE  │
+│  text            │ TEXT      │  │  source          │ VARCHAR   │
+│  createdAt       │ TIMESTAMP │  │                 │ NULLABLE  │
+│                              │  │  text            │ TEXT      │
+│                              │  │  createdAt       │ TIMESTAMP │
+└──────────────────────────────┘  └──────────────────────────────┘
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                          RELATIONSHIP SUMMARY                                ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+    Surah (1) ────────────────< (Many) Ayah
+                                    │
+                    ┌───────────────┴───────────────┐
+                    │                               │
+            (Many) Translation              (Many) Tafsir
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                          KEY RELATIONSHIPS                                   ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+1. Surah → Ayah: One-to-Many
+   - One Surah can have many Ayahs
+   - Each Ayah belongs to exactly one Surah
+
+2. Ayah → Translation: One-to-Many
+   - One Ayah can have many Translations (different languages)
+   - Each Translation belongs to exactly one Ayah
+
+3. Ayah → Tafsir: One-to-Many
+   - One Ayah can have many Tafsirs (different languages/scholars)
+   - Each Tafsir belongs to exactly one Ayah
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                          EXAMPLE DATA STRUCTURE                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+Surah (Al-Fatihah)
+  ├── Ayah 1 (بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ)
+  │   ├── Translation (en, Sahih International)
+  │   ├── Translation (ml, Muhammad Karakunnu)
+  │   ├── Tafsir (en, Ibn Kathir)
+  │   └── Tafsir (ml, Ibn Kathir)
+  │
+  ├── Ayah 2 (الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ)
+  │   ├── Translation (en, Sahih International)
+  │   ├── Translation (ml, Muhammad Karakunnu)
+  │   ├── Tafsir (en, Ibn Kathir)
+  │   └── Tafsir (ml, Ibn Kathir)
+  │
+  └── ... (continues for all 7 ayahs)
+
