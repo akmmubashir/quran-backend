@@ -5,8 +5,6 @@ import {
   Query,
   ParseIntPipe,
   DefaultValuePipe,
-  ParseArrayPipe,
-  BadRequestException,
 } from '@nestjs/common';
 import { QuranService } from './quran.service';
 
@@ -206,7 +204,10 @@ export class QuranController {
   // ==================== Translations ====================
 
   @Get('resources/translations')
-  async listTranslations(@Query('language') lang?: string, @Query('slug') slug?: string) {
+  async listTranslations(
+    @Query('language') lang?: string,
+    @Query('slug') slug?: string,
+  ) {
     return this.service.listTranslations(lang, slug);
   }
 
@@ -227,7 +228,10 @@ export class QuranController {
   // ==================== Tafsirs ====================
 
   @Get('resources/tafsirs')
-  async listTafsirs(@Query('language') lang?: string, @Query('slug') slug?: string) {
+  async listTafsirs(
+    @Query('language') lang?: string,
+    @Query('slug') slug?: string,
+  ) {
     return this.service.listTafsirs(lang, slug);
   }
 
@@ -249,11 +253,13 @@ export class QuranController {
 
   @Get('juzs')
   async listJuzs() {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return this.service.listJuzs();
   }
 
   @Get('juzs/:juz_number')
   async getJuz(@Param('juz_number', ParseIntPipe) juzNumber: number) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return this.service.getJuz(juzNumber);
   }
 
@@ -261,11 +267,13 @@ export class QuranController {
 
   @Get('resources/languages')
   async listLanguages() {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return this.service.listLanguages();
   }
 
   @Get('resources/languages/:iso_code')
   async getLanguage(@Param('iso_code') isoCode: string) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return this.service.getLanguage(isoCode);
   }
 }

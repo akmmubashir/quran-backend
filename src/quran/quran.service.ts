@@ -7,7 +7,8 @@ const prisma = new PrismaClient();
 export class QuranService {
   // ==================== Chapters/Surahs ====================
 
-  async listSurahs(lang?: string) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async listSurahs(_lang?: string) {
     const surahs = await prisma.surah.findMany({
       orderBy: { number: 'asc' },
     });
@@ -50,13 +51,16 @@ export class QuranService {
 
   // ==================== Verses/Ayahs ====================
 
-  async getAyahByKey(verseKey: string, options?: {
-    translations?: number[];
-    tafsirs?: number[];
-    lang?: string;
-  }) {
+  async getAyahByKey(
+    verseKey: string,
+    options?: {
+      translations?: number[];
+      tafsirs?: number[];
+      lang?: string;
+    },
+  ) {
     const [surahNum, ayahNum] = verseKey.split(':').map(Number);
-    
+
     const ayah = await prisma.ayah.findFirst({
       where: {
         surah: { number: surahNum },
@@ -97,7 +101,9 @@ export class QuranService {
           : options?.lang
             ? { where: { language_code: options.lang } }
             : true,
-        tafsirs: options?.lang ? { where: { language_code: options.lang } } : true,
+        tafsirs: options?.lang
+          ? { where: { language_code: options.lang } }
+          : true,
       },
     });
     return ayah;
@@ -208,7 +214,10 @@ export class QuranService {
     };
   }
 
-  async getAyahsByHizb(hizbNumber: number, options?: { translations?: number[]; lang?: string }) {
+  async getAyahsByHizb(
+    hizbNumber: number,
+    options?: { translations?: number[]; lang?: string },
+  ) {
     const ayahs = await prisma.ayah.findMany({
       where: { hizb_number: hizbNumber },
       include: {
@@ -224,7 +233,10 @@ export class QuranService {
     return ayahs;
   }
 
-  async getAyahsByRub(rubNumber: number, options?: { translations?: number[]; lang?: string }) {
+  async getAyahsByRub(
+    rubNumber: number,
+    options?: { translations?: number[]; lang?: string },
+  ) {
     const ayahs = await prisma.ayah.findMany({
       where: { rub_el_hizb_number: rubNumber },
       include: {
@@ -260,7 +272,11 @@ export class QuranService {
 
   // ==================== Translations ====================
 
-  async getTranslations(surahNumber: number, ayahNumber: number, lang?: string) {
+  async getTranslations(
+    surahNumber: number,
+    ayahNumber: number,
+    lang?: string,
+  ) {
     const ayah = await prisma.ayah.findFirst({
       where: { surah: { number: surahNumber }, ayah_number: ayahNumber },
       include: {
@@ -285,8 +301,8 @@ export class QuranService {
   }
 
   async getTranslationBySlug(slug: string) {
-    return prisma.translation.findFirst({ 
-      where: { slug, ayahId: null } 
+    return prisma.translation.findFirst({
+      where: { slug, ayahId: null },
     });
   }
 
@@ -317,28 +333,36 @@ export class QuranService {
   }
 
   async getTafsirBySlug(slug: string) {
-    return prisma.tafsir.findFirst({ 
-      where: { slug, ayahId: null } 
+    return prisma.tafsir.findFirst({
+      where: { slug, ayahId: null },
     });
   }
 
   // ==================== Juzs ====================
 
+  // eslint-disable-next-line @typescript-eslint/require-await
   async listJuzs() {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     return prisma.juz.findMany({ orderBy: { juz_number: 'asc' } });
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await
   async getJuz(juzNumber: number) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     return prisma.juz.findUnique({ where: { juz_number: juzNumber } });
   }
 
   // ==================== Languages ====================
 
+  // eslint-disable-next-line @typescript-eslint/require-await
   async listLanguages() {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     return prisma.language.findMany({ orderBy: { name: 'asc' } });
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await
   async getLanguage(isoCode: string) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     return prisma.language.findUnique({ where: { iso_code: isoCode } });
   }
 }
