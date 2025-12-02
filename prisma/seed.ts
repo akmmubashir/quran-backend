@@ -1,4 +1,42 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/**
+ * Database Seeding Script for Quran Backend
+ *
+ * PURPOSE:
+ * Populates the database with:
+ * - All 114 Surahs (Quran chapters)
+ * - All Ayahs (Quran verses) with Arabic text
+ * - Translations in multiple languages
+ * - Tafsirs (interpretations/commentaries)
+ * - Language metadata with translation counts
+ *
+ * USAGE:
+ * npm run prisma:seed
+ * OR
+ * ts-node prisma/seed.ts
+ *
+ * PREREQUISITES:
+ * 1. Database must exist and migrations must be applied (npx prisma migrate deploy)
+ * 2. Files must exist in project root:
+ *    - quran.json: Contains surahs, ayahs, translations, and tafsirs
+ *    - languages.json: Contains language metadata
+ *
+ * PROCESS:
+ * 1. Reads quran.json and languages.json from parent directory
+ * 2. For each surah:
+ *    - Creates or updates surah record
+ *    - Creates ayahs with verse numbers and Arabic text
+ *    - Attaches translations to each ayah
+ *    - Attaches tafsirs to each ayah
+ * 3. For each language:
+ *    - Computes translations_count (distinct translation resources)
+ *    - Upserts language record with metadata
+ *
+ * NOTES:
+ * - Safe to run multiple times (uses upsert and deleteMany)
+ * - Generates slugs automatically from translator/scholar names
+ * - Handles missing/null values with sensible defaults
+ */
 import { PrismaClient } from '@prisma/client';
 import fs from 'fs';
 import path from 'path';

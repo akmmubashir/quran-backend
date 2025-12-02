@@ -9,8 +9,10 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
+    "prestart:dev": "npm run prisma:setup",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
+    "prebuild": "npm run prisma:generate",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
@@ -18,7 +20,17 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "prisma:seed": "ts-node prisma/seed.ts"
+    "prisma:seed": "ts-node prisma/seed.ts",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate deploy",
+    "prisma:studio": "prisma studio",
+    "prisma:setup": "npm run prisma:generate && npm run prisma:migrate && npm run prisma:seed"
+  },
+  "_comments": {
+    "setup": "Just run 'npm run start:dev' - it automatically runs prisma:generate, prisma:migrate, and prisma:seed!",
+    "dev": "'npm run start:dev' includes automatic Prisma setup (generate + migrate + seed) before starting",
+    "manual": "For manual control: 'npm run prisma:generate', 'npm run prisma:migrate', 'npm run prisma:seed'",
+    "database": "After schema changes: 'npx prisma migrate dev --name your_description' (generates client automatically)"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
