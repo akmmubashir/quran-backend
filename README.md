@@ -1,98 +1,352 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Quran Backend API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A comprehensive REST and GraphQL API for accessing Quran data, built with NestJS, Prisma, and PostgreSQL. This API provides a similar structure to Quran.com's API, offering access to chapters, verses, translations, tafsirs, audio recitations, and more.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Features
+
+✨ **Comprehensive Quran Data**
+- 114 Chapters (Surahs) with detailed metadata
+- 6,236+ Verses (Ayahs) with multiple text formats
+- Word-by-word translations and transliterations
+- Multiple Mushaf page layouts support
+
+📖 **Rich Content**
+- Multiple translation resources in various languages
+- Tafsir (commentary) resources from renowned scholars
+- Chapter information and context
+- Juz, Hizb, and Rub el Hizb divisions
+
+🎵 **Audio Support**
+- Multiple reciters with different recitation styles
+- Chapter-level audio
+- Verse-by-verse audio with timing segments
+- Word-by-word audio support
+
+🌍 **Multi-Language Support**
+- Support for multiple languages
+- Language-specific translations and tafsirs
+- RTL and LTR text direction support
+
+🚀 **Dual API Access**
+- RESTful API endpoints
+- GraphQL API with comprehensive queries
+- Pagination support for large datasets
+- Flexible filtering and query options
+
+## Tech Stack
+
+- **Framework**: NestJS (Node.js)
+- **Database**: PostgreSQL
+- **ORM**: Prisma
+- **GraphQL**: Apollo Server
+- **Language**: TypeScript
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Built with the [NestJS](https://github.com/nestjs/nest) framework, this API provides a robust and scalable solution for accessing Quran data programmatically.
 
-## Project setup
+## Quick Start
 
+### Prerequisites
+
+- Node.js (v18 or higher)
+- PostgreSQL (v14 or higher)
+- npm or yarn
+
+### Installation
+
+1. **Clone the repository**
 ```bash
-$ npm install
+git clone <repository-url>
+cd quran-backend
 ```
 
-## Compile and run the project
-
+2. **Install dependencies**
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm install
 ```
 
-## Run tests
+3. **Set up environment variables**
+
+Create a `.env` file in the root directory:
+
+```env
+DATABASE_URL="postgresql://username:password@localhost:5432/quran?schema=public"
+```
+
+4. **Run database migrations**
+```bash
+npx prisma migrate dev
+```
+
+5. **Seed the database** (optional)
+```bash
+npm run prisma:seed
+```
+
+6. **Start the development server**
+```bash
+npm run start:dev
+```
+
+The API will be available at:
+- REST API: `http://localhost:3000`
+- GraphQL Playground: `http://localhost:3000/graphql`
+
+## API Documentation
+
+For comprehensive API documentation, see:
+- [API Documentation](./API_DOCUMENTATION.md) - Full documentation with examples
+- [API Endpoints Quick Reference](./API_ENDPOINTS.md) - Quick reference guide
+
+### Quick Examples
+
+**Get a chapter:**
+```bash
+GET http://localhost:3000/chapters/1
+```
+
+**Get a verse with translations:**
+```bash
+GET http://localhost:3000/verses/by_key/2:255?translations=20,131&words=true
+```
+
+**GraphQL Query:**
+```graphql
+query {
+  verseByKey(verseKey: "2:255", translations: [20]) {
+    verse_key
+    text_ar
+    translations {
+      text
+      resource {
+        name
+      }
+    }
+  }
+}
+```
+
+## Available Scripts
 
 ```bash
-# unit tests
-$ npm run test
+# Development
+npm run start              # Start the application
+npm run start:dev          # Start with watch mode
+npm run start:debug        # Start with debug mode
 
-# e2e tests
-$ npm run test:e2e
+# Production
+npm run build              # Build the application
+npm run start:prod         # Start in production mode
 
-# test coverage
-$ npm run test:cov
+# Database
+npm run prisma:seed        # Seed the database
+npx prisma studio          # Open Prisma Studio
+npx prisma migrate dev     # Run migrations
+
+# Testing
+npm run test               # Run unit tests
+npm run test:watch         # Run tests in watch mode
+npm run test:e2e           # Run e2e tests
+npm run test:cov           # Run tests with coverage
+
+# Code Quality
+npm run lint               # Run ESLint
+npm run format             # Format code with Prettier
+```
+
+## Database Schema
+
+The database includes the following main models:
+
+- **Surah** - Chapters of the Quran
+- **Ayah** - Verses with multiple text formats
+- **Word** - Word-by-word data
+- **Translation** - Verse translations
+- **TranslationResource** - Translation metadata
+- **Tafsir** - Verse commentaries
+- **TafsirResource** - Tafsir metadata
+- **Reciter** - Audio reciters
+- **AudioFile** - Verse-level audio
+- **ChapterAudio** - Chapter-level audio
+- **ChapterInfo** - Chapter descriptions
+- **Juz** - Quran divisions (1-30)
+- **Language** - Supported languages
+
+See [DATABASE_DIAGRAM.md](./DATABASE_DIAGRAM.md) for the complete schema.
+
+## Project Structure
+
+```
+quran-backend/
+├── src/
+│   ├── quran/
+│   │   ├── quran.controller.ts    # REST API endpoints
+│   │   ├── quran.resolver.ts      # GraphQL resolvers
+│   │   ├── quran.service.ts       # Business logic
+│   │   ├── quran.types.ts         # GraphQL types
+│   │   └── quran.module.ts        # Module definition
+│   ├── app.module.ts              # Root module
+│   └── main.ts                    # Application entry point
+├── prisma/
+│   ├── schema.prisma              # Database schema
+│   ├── seed.ts                    # Database seeding
+│   └── migrations/                # Database migrations
+├── API_DOCUMENTATION.md           # Full API documentation
+├── API_ENDPOINTS.md               # Quick reference
+└── README.md                      # This file
+```
+
+## API Endpoints Overview
+
+### Chapters
+- `GET /chapters` - List all chapters
+- `GET /chapters/:id` - Get chapter details
+- `GET /chapters/:id/info` - Get chapter information
+
+### Verses
+- `GET /verses/by_key/:verse_key` - Get verse by key (e.g., "2:255")
+- `GET /verses/by_chapter/:chapter` - Get verses by chapter
+- `GET /verses/by_page/:page` - Get verses by Mushaf page
+- `GET /verses/by_juz/:juz` - Get verses by Juz
+- `GET /verses/random` - Get random verse
+
+### Resources
+- `GET /resources/translations` - List translations
+- `GET /resources/tafsirs` - List tafsirs
+- `GET /resources/recitations` - List reciters
+- `GET /resources/languages` - List languages
+
+### Audio
+- `GET /chapter_recitations/:chapter` - Chapter audio
+- `GET /recitations/:id/by_chapter/:chapter` - Verse audio
+
+See [API_ENDPOINTS.md](./API_ENDPOINTS.md) for complete list.
+
+## GraphQL API
+
+Access the GraphQL Playground at `http://localhost:3000/graphql`
+
+Example queries:
+
+```graphql
+# Get chapter with verses
+query {
+  chapter(id: 1, includeAyahs: true) {
+    number
+    name_ar
+    name_en
+    total_ayahs
+    ayahs {
+      verse_key
+      text_ar
+    }
+  }
+}
+
+# Get verse with translations
+query {
+  verseByKey(
+    verseKey: "2:255"
+    translations: [20, 131]
+    words: true
+  ) {
+    verse_key
+    text_ar
+    translations {
+      text
+      resource {
+        name
+        author_name
+      }
+    }
+    words {
+      text_uthmani
+      transliteration
+      translation
+    }
+  }
+}
+```
+
+## Environment Variables
+
+```env
+# Database
+DATABASE_URL="postgresql://user:password@localhost:5432/quran"
+
+# Server (optional)
+PORT=3000
+NODE_ENV=development
+```
+
+## Development
+
+### Database Management
+
+```bash
+# Create a new migration
+npx prisma migrate dev --name migration_name
+
+# Apply migrations
+npx prisma migrate deploy
+
+# Reset database
+npx prisma migrate reset
+
+# Open Prisma Studio
+npx prisma studio
+
+# Generate Prisma Client
+npx prisma generate
+```
+
+### Code Quality
+
+The project uses ESLint and Prettier for code quality:
+
+```bash
+npm run lint          # Check for linting errors
+npm run format        # Format code with Prettier
+```
+
+## Testing
+
+```bash
+# Unit tests
+npm run test
+
+# E2E tests
+npm run test:e2e
+
+# Test coverage
+npm run test:cov
 ```
 
 ## Deployment
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+For production deployment:
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+1. Set environment variables
+2. Build the application: `npm run build`
+3. Run migrations: `npx prisma migrate deploy`
+4. Start the server: `npm run start:prod`
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+See [NestJS deployment documentation](https://docs.nestjs.com/deployment) for more details.
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Resources
 
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- [NestJS Documentation](https://docs.nestjs.com)
+- [Prisma Documentation](https://www.prisma.io/docs)
+- [GraphQL Documentation](https://graphql.org/learn/)
+- [Quran.com API](https://api-docs.quran.foundation/)
 
 ## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+This project is licensed under the MIT License.
+#   q u r a n - b a c k e n d  
+ 

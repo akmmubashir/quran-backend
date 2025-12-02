@@ -4,25 +4,25 @@
 
 type Translation {
   id: Int!
+  name: String!
+  author_name: String
+  slug: String!
+  language_name: String!
   language_code: String!
-  translator: String
+  direction: String!
   text: String!
+  info: String
 }
 
 type Tafsir {
   id: Int!
+  name: String!
+  author_name: String
+  slug: String!
+  language_name: String!
   language_code: String!
-  scholar: String
-  source: String
   text: String!
-}
-
-type Ayah {
-  id: Int!
-  ayah_number: Int!
-  text_ar: String!
-  translations: [Translation!]
-  tafsirs: [Tafsir!]
+  info: String
 }
 
 type Surah {
@@ -30,14 +30,92 @@ type Surah {
   number: Int!
   name_ar: String!
   name_en: String
+  name_simple: String
+  name_complex: String
+  transliterated_name: String
   revelation: String
+  revelation_order: Int
   total_ayahs: Int!
+  bismillah_pre: Boolean!
+  pages: [Int!]
+  surah_info: String
   ayahs: [Ayah!]
+}
+
+type Ayah {
+  id: Int!
+  ayah_number: Int!
+  verse_key: String!
+  text_ar: String!
+  text_uthmani: String
+  text_uthmani_simple: String
+  text_uthmani_tajweed: String
+  text_imlaei: String
+  text_indopak: String
+  juz_number: Int
+  hizb_number: Int
+  rub_el_hizb_number: Int
+  page_number: Int
+  sajdah: Boolean!
+  sajdah_type: String
+  translations: [Translation!]
+  tafsirs: [Tafsir!]
+  surah: Surah
+}
+
+type Juz {
+  id: Int!
+  juz_number: Int!
+  name_ar: String
+  name_en: String
+  first_verse_key: String!
+  last_verse_key: String!
+  verses_count: Int!
+}
+
+type Language {
+  id: Int!
+  name: String!
+  native_name: String
+  iso_code: String!
+  direction: String!
+  translations_count: Int!
+}
+
+type PaginationMeta {
+  currentPage: Int!
+  totalPages: Int!
+  perPage: Int!
+  totalRecords: Int!
+}
+
+type PaginatedAyahs {
+  ayahs: [Ayah!]!
+  pagination: PaginationMeta!
 }
 
 type Query {
   ping: String!
-  ayah(surah: Int!, ayah: Int!, lang: String): Ayah
+  chapters(language: String): [Surah!]!
+  chapter(id: Int!, language: String, includeAyahs: Boolean = false): Surah
+  surahs(lang: String): [Surah!]!
   surah(number: Int!, includeAyahs: Boolean = true, lang: String): Surah
-  surahs: [Surah!]!
+  verseByKey(verseKey: String!, language: String, translations: [Int!], tafsirs: [Int!]): Ayah
+  versesByChapter(chapterNumber: Int!, language: String, translations: [Int!], page: Int = 1, perPage: Int = 10): PaginatedAyahs!
+  versesByPage(pageNumber: Int!, language: String, translations: [Int!]): [Ayah!]!
+  versesByJuz(juzNumber: Int!, language: String, translations: [Int!], page: Int = 1, perPage: Int = 10): PaginatedAyahs!
+  versesByHizb(hizbNumber: Int!, language: String, translations: [Int!]): [Ayah!]!
+  versesByRub(rubNumber: Int!, language: String, translations: [Int!]): [Ayah!]!
+  randomVerse(language: String, translations: [Int!]): Ayah
+  ayah(surah: Int!, ayah: Int!, lang: String): Ayah
+  translationResources(language: String, slug: String): [Translation!]!
+  translationResource(slug: String!): Translation
+  translations(surah: Int!, ayah: Int!, lang: String): [Translation!]!
+  tafsirResources(language: String, slug: String): [Tafsir!]!
+  tafsirResource(slug: String!): Tafsir
+  tafsirs(surah: Int!, ayah: Int!, lang: String): [Tafsir!]!
+  juzs: [Juz!]!
+  juz(juzNumber: Int!): Juz
+  languages: [Language!]!
+  language(isoCode: String!): Language
 }

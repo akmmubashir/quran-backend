@@ -8,50 +8,105 @@ datasource db {
 }
 
 model Surah {
-  id             Int      @id @default(autoincrement())
-  number         Int      @unique
-  name_ar        String
-  name_en        String?
-  revelation     String?
-  total_ayahs    Int
-  ayahs          Ayah[]
-  createdAt      DateTime @default(now())
+  id                  Int           @id @default(autoincrement())
+  number              Int           @unique
+  name_ar             String
+  name_en             String?
+  name_simple         String?
+  name_complex        String?
+  transliterated_name String?
+  revelation          String?       // 'meccan' or 'medinan'
+  revelation_order    Int?
+  total_ayahs         Int
+  bismillah_pre       Boolean       @default(true)
+  pages               Int[]         @default([])
+  surah_info          String?       @db.Text // Chapter information/description
+  ayahs               Ayah[]
+  createdAt           DateTime      @default(now())
 }
 
 model Ayah {
-  id           Int          @id @default(autoincrement())
-  surah        Surah        @relation(fields: [surahId], references: [id])
-  surahId      Int
-  ayah_number  Int
-  text_ar      String       @db.Text
-  translations Translation[]
-  tafsirs      Tafsir[]
-  createdAt    DateTime     @default(now())
+  id                   Int             @id @default(autoincrement())
+  surah                Surah           @relation(fields: [surahId], references: [id])
+  surahId              Int
+  ayah_number          Int
+  verse_key            String          // Format: "1:1"
+  text_ar              String          @db.Text
+  text_uthmani         String?         @db.Text
+  text_uthmani_simple  String?         @db.Text
+  text_uthmani_tajweed String?         @db.Text
+  text_imlaei          String?         @db.Text
+  text_indopak         String?         @db.Text
+  juz_number           Int?
+  hizb_number          Int?
+  rub_el_hizb_number   Int?
+  page_number          Int?
+  sajdah               Boolean         @default(false)
+  sajdah_type          String?         // 'recommended' or 'obligatory'
+  translations         Translation[]
+  tafsirs              Tafsir[]
+  createdAt            DateTime        @default(now())
 
   @@unique([surahId, ayah_number])
+  @@index([verse_key])
+  @@index([juz_number])
+  @@index([page_number])
 }
 
 model Translation {
-  id            Int      @id @default(autoincrement())
-  ayah          Ayah     @relation(fields: [ayahId], references: [id])
-  ayahId        Int
-  language_code String
-  translator    String?
-  text          String   @db.Text
-  createdAt     DateTime @default(now())
+  id              Int       @id @default(autoincrement())
+  ayah            Ayah?     @relation(fields: [ayahId], references: [id])
+  ayahId          Int?
+  name            String    // Resource name (e.g., "Sahih International")
+  author_name     String?   // Translator/Author name
+  slug            String    // Unique identifier for this translation
+  language_name   String    // Full language name (e.g., "English")
+  language_code   String    // ISO language code (e.g., "en")
+  direction       String    @default("ltr") // 'ltr' or 'rtl'
+  text            String    @db.Text // The actual translation text
+  info            String?   @db.Text // Additional information
+  createdAt       DateTime  @default(now())
 
   @@index([language_code])
+  @@index([slug])
+  @@index([ayahId])
 }
 
 model Tafsir {
-  id            Int      @id @default(autoincrement())
-  ayah          Ayah     @relation(fields: [ayahId], references: [id])
-  ayahId        Int
-  language_code String
-  scholar       String?
-  source        String?
-  text          String   @db.Text
-  createdAt     DateTime @default(now())
+  id              Int       @id @default(autoincrement())
+  ayah            Ayah?     @relation(fields: [ayahId], references: [id])
+  ayahId          Int?
+  name            String    // Resource name (e.g., "Ibn Kathir")
+  author_name     String?   // Scholar/Author name
+  slug            String    // Unique identifier for this tafsir
+  language_name   String    // Full language name
+  language_code   String    // ISO language code
+  text            String    @db.Text // The actual tafsir text
+  info            String?   @db.Text // Additional information
+  createdAt       DateTime  @default(now())
 
   @@index([language_code])
+  @@index([slug])
+  @@index([ayahId])
+}
+
+model Juz {
+  id              Int      @id @default(autoincrement())
+  juz_number      Int      @unique
+  name_ar         String?
+  name_en         String?
+  first_verse_key String
+  last_verse_key  String
+  verses_count    Int
+  createdAt       DateTime @default(now())
+}
+
+model Language {
+  id                Int      @id @default(autoincrement())
+  name              String
+  native_name       String?
+  iso_code          String   @unique
+  direction         String   @default("ltr")
+  translations_count Int     @default(0)
+  createdAt         DateTime @default(now())
 }

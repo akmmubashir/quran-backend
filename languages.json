@@ -1,0 +1,23 @@
+[
+  {
+    "name": "English",
+    "native_name": "English",
+    "iso_code": "en",
+    "direction": "ltr",
+    "translations_count": 1
+  },
+  {
+    "name": "Arabic",
+    "native_name": "العربية",
+    "iso_code": "ar",
+    "direction": "rtl",
+    "translations_count": 1
+  },
+  {
+    "name": "Malayalam",
+    "native_name": "മലയാളം",
+    "iso_code": "ml",
+    "direction": "ltr",
+    "translations_count": 1
+  }
+]
