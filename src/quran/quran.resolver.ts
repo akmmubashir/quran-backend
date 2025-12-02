@@ -215,9 +215,7 @@ export class QuranResolver {
   }
 
   @Query(() => Tafsir, { nullable: true })
-  async tafsirResource(
-    @Args('slug', { type: () => String }) slug: string,
-  ) {
+  async tafsirResource(@Args('slug', { type: () => String }) slug: string) {
     return this.service.getTafsirBySlug(slug);
   }
 
@@ -234,11 +232,13 @@ export class QuranResolver {
 
   @Query(() => [Juz])
   async juzs() {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return this.service.listJuzs();
   }
 
   @Query(() => Juz, { nullable: true })
   async juz(@Args('juzNumber', { type: () => Int }) juzNumber: number) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return this.service.getJuz(juzNumber);
   }
 
@@ -246,11 +246,13 @@ export class QuranResolver {
 
   @Query(() => [Language])
   async languages() {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return this.service.listLanguages();
   }
 
   @Query(() => Language, { nullable: true })
   async language(@Args('isoCode', { type: () => String }) isoCode: string) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return this.service.getLanguage(isoCode);
   }
 }
