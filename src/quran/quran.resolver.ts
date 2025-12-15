@@ -183,16 +183,15 @@ export class QuranResolver {
   @Query(() => [Translation])
   async translationResources(
     @Args('language', { type: () => String, nullable: true }) lang?: string,
-    @Args('slug', { type: () => String, nullable: true }) slug?: string,
   ) {
-    return this.service.listTranslations(lang, slug);
+    return this.service.listTranslations(lang);
   }
 
   @Query(() => Translation, { nullable: true })
   async translationResource(
-    @Args('slug', { type: () => String }) slug: string,
+    @Args('id', { type: () => Int }) id: number,
   ) {
-    return this.service.getTranslationBySlug(slug);
+    return this.service.getTranslationById(id);
   }
 
   @Query(() => [Translation])
@@ -209,14 +208,13 @@ export class QuranResolver {
   @Query(() => [Tafsir])
   async tafsirResources(
     @Args('language', { type: () => String, nullable: true }) lang?: string,
-    @Args('slug', { type: () => String, nullable: true }) slug?: string,
   ) {
-    return this.service.listTafsirs(lang, slug);
+    return this.service.listTafsirs(lang);
   }
 
   @Query(() => Tafsir, { nullable: true })
-  async tafsirResource(@Args('slug', { type: () => String }) slug: string) {
-    return this.service.getTafsirBySlug(slug);
+  async tafsirResource(@Args('source', { type: () => String }) source: string) {
+    return this.service.getTafsirBySource(source);
   }
 
   @Query(() => [Tafsir])

@@ -206,14 +206,13 @@ export class QuranController {
   @Get('resources/translations')
   async listTranslations(
     @Query('language') lang?: string,
-    @Query('slug') slug?: string,
   ) {
-    return this.service.listTranslations(lang, slug);
+    return this.service.listTranslations(lang);
   }
 
-  @Get('resources/translations/:slug')
-  async getTranslation(@Param('slug') slug: string) {
-    return this.service.getTranslationBySlug(slug);
+  @Get('resources/translations/:id')
+  async getTranslation(@Param('id', ParseIntPipe) id: number) {
+    return this.service.getTranslationById(id);
   }
 
   @Get('surah/:number/ayah/:ayah/translations')
@@ -230,14 +229,13 @@ export class QuranController {
   @Get('resources/tafsirs')
   async listTafsirs(
     @Query('language') lang?: string,
-    @Query('slug') slug?: string,
   ) {
-    return this.service.listTafsirs(lang, slug);
+    return this.service.listTafsirs(lang);
   }
 
-  @Get('resources/tafsirs/:slug')
-  async getTafsir(@Param('slug') slug: string) {
-    return this.service.getTafsirBySlug(slug);
+  @Get('resources/tafsirs/:source')
+  async getTafsir(@Param('source') source: string) {
+    return this.service.getTafsirBySource(source);
   }
 
   @Get('surah/:number/ayah/:ayah/tafsirs')

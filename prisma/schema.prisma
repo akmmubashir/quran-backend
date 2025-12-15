@@ -42,6 +42,8 @@ model Surah {
   pages               Int[]         @default([])
   surah_info          String?       @db.Text // Chapter information/description
   ayahs               Ayah[]
+  translations        Translation[]
+  tafsirs             Tafsir[]
   createdAt           DateTime      @default(now())
 }
 
@@ -77,37 +79,33 @@ model Translation {
   id              Int       @id @default(autoincrement())
   ayah            Ayah?     @relation(fields: [ayahId], references: [id])
   ayahId          Int?
-  name            String    // Resource name (e.g., "Sahih International")
-  author_name     String?   // Translator/Author name
-  slug            String    // Unique identifier for this translation
-  language_name   String    // Full language name (e.g., "English")
+  surah           Surah?    @relation(fields: [surahId], references: [id])
+  surahId         Int?
   language_code   String    // ISO language code (e.g., "en")
-  direction       String    @default("ltr") // 'ltr' or 'rtl'
+  translator      String    // Translator/Author name
   text            String    @db.Text // The actual translation text
-  info            String?   @db.Text // Additional information
   createdAt       DateTime  @default(now())
 
   @@index([language_code])
-  @@index([slug])
   @@index([ayahId])
+  @@index([surahId])
 }
 
 model Tafsir {
   id              Int       @id @default(autoincrement())
   ayah            Ayah?     @relation(fields: [ayahId], references: [id])
   ayahId          Int?
-  name            String    // Resource name (e.g., "Ibn Kathir")
-  author_name     String?   // Scholar/Author name
-  slug            String    // Unique identifier for this tafsir
-  language_name   String    // Full language name
+  surah           Surah?    @relation(fields: [surahId], references: [id])
+  surahId         Int?
   language_code   String    // ISO language code
+  scholar         String?   // Scholar/Author name
+  source          String?   // Source name (e.g., "Ibn Kathir")
   text            String    @db.Text // The actual tafsir text
-  info            String?   @db.Text // Additional information
   createdAt       DateTime  @default(now())
 
   @@index([language_code])
-  @@index([slug])
   @@index([ayahId])
+  @@index([surahId])
 }
 
 model Juz {

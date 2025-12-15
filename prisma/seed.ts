@@ -106,19 +106,13 @@ async function main() {
                 const language_code: string = t.language_code;
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                 const translator: string = t.translator ?? 'Unknown';
-                const name = translator;
-                const slug = slugify(`${language_code}-${translator}`);
-                const language_name = language_code; // fallback; refined via languages table later
                 return {
                   ayahId: ayah.id,
+                  surahId: exists.id,
                   language_code,
-                  name,
-                  slug,
-                  language_name,
-                  direction: 'ltr',
+                  translator,
                   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                   text: t.text,
-                  info: null,
                 };
               }),
             });
@@ -133,20 +127,17 @@ async function main() {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                 const language_code: string = t.language_code;
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                const name = t.scholar ?? t.source ?? 'Tafsir';
-                const slug = slugify(`${language_code}-${name}`);
-                const language_name = language_code;
+                const scholar: string | null = t.scholar ?? null;
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                const source: string | null = t.source ?? null;
                 return {
                   ayahId: ayah.id,
+                  surahId: exists.id,
                   language_code,
-                  name,
-                  slug,
-                  language_name,
-                  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                  author_name: t.scholar ?? null,
+                  scholar,
+                  source,
                   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                   text: t.text,
-                  info: null,
                 };
               }),
             });
@@ -176,6 +167,8 @@ async function main() {
               // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
               ayah_number: a.ayah_number,
               // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+              verse_key: `${s.surah_number}:${a.ayah_number}`,
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
               text_ar: a.text_ar,
               // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
               translations: a.translations
@@ -186,18 +179,12 @@ async function main() {
                       const language_code: string = t.language_code;
                       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                       const translator: string = t.translator ?? 'Unknown';
-                      const name = translator;
-                      const slug = slugify(`${language_code}-${translator}`);
-                      const language_name = language_code;
                       return {
                         language_code,
-                        name,
-                        slug,
-                        language_name,
-                        direction: 'ltr',
+                        translator,
+                        surahId: s.surah_number,
                         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                         text: t.text,
-                        info: null,
                       };
                     }),
                   }
@@ -210,19 +197,16 @@ async function main() {
                       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                       const language_code: string = t.language_code;
                       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                      const name = t.scholar ?? t.source ?? 'Tafsir';
-                      const slug = slugify(`${language_code}-${name}`);
-                      const language_name = language_code;
+                      const scholar: string | null = t.scholar ?? null;
+                      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                      const source: string | null = t.source ?? null;
                       return {
                         language_code,
-                        name,
-                        slug,
-                        language_name,
-                        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                        author_name: t.scholar ?? null,
+                        scholar,
+                        source,
+                        surahId: s.surah_number,
                         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                         text: t.text,
-                        info: null,
                       };
                     }),
                   }
@@ -251,14 +235,14 @@ async function main() {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       const direction: string = l.direction ?? (l.rtl ? 'rtl' : 'ltr');
 
-      // Compute translations_count as the number of distinct translation resources (slug) for this language
+      // Compute translations_count as the number of distinct translation resources (translator) for this language
       const resources = await prisma.translation.groupBy({
-        by: ['slug'],
+        by: ['translator'],
         where: {
           language_code: iso,
           ayahId: null,
         },
-        _count: { slug: true },
+        _count: { translator: true },
       });
 
       const translations_count = resources.length;

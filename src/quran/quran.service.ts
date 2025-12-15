@@ -288,21 +288,28 @@ export class QuranService {
     return ayah?.translations || [];
   }
 
-  async listTranslations(lang?: string, slug?: string) {
-    return prisma.translation.findMany({
+  async listTranslations(lang?: string) {
+    const translations = await prisma.translation.findMany({
       where: {
         ...(lang && { language_code: lang }),
-        ...(slug && { slug }),
         ayahId: null, // Only get the template/resource translations
       },
-      orderBy: { name: 'asc' },
-      distinct: ['slug'],
+      orderBy: { translator: 'asc' },
+    });
+
+    // Manually filter to get distinct translator + language_code combinations
+    const seen = new Set<string>();
+    return translations.filter((t) => {
+      const key = `${t.translator}-${t.language_code}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
     });
   }
 
-  async getTranslationBySlug(slug: string) {
+  async getTranslationById(id: number) {
     return prisma.translation.findFirst({
-      where: { slug, ayahId: null },
+      where: { id, ayahId: null },
     });
   }
 
@@ -320,21 +327,28 @@ export class QuranService {
     return ayah?.tafsirs || [];
   }
 
-  async listTafsirs(lang?: string, slug?: string) {
-    return prisma.tafsir.findMany({
+  async listTafsirs(lang?: string) {
+    const tafsirs = await prisma.tafsir.findMany({
       where: {
         ...(lang && { language_code: lang }),
-        ...(slug && { slug }),
         ayahId: null, // Only get the template/resource tafsirs
       },
-      orderBy: { name: 'asc' },
-      distinct: ['slug'],
+      orderBy: { source: 'asc' },
+    });
+
+    // Manually filter to get distinct source + language_code combinations
+    const seen = new Set<string>();
+    return tafsirs.filter((t) => {
+      const key = `${t.source}-${t.language_code}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
     });
   }
 
-  async getTafsirBySlug(slug: string) {
+  async getTafsirBySource(source: string) {
     return prisma.tafsir.findFirst({
-      where: { slug, ayahId: null },
+      where: { source, ayahId: null },
     });
   }
 

@@ -4,25 +4,21 @@
 
 type Translation {
   id: Int!
-  name: String!
-  author_name: String
-  slug: String!
-  language_name: String!
+  surahId: Int
+  ayahId: Int
   language_code: String!
-  direction: String!
+  translator: String!
   text: String!
-  info: String
 }
 
 type Tafsir {
   id: Int!
-  name: String!
-  author_name: String
-  slug: String!
-  language_name: String!
+  surahId: Int
+  ayahId: Int
   language_code: String!
+  scholar: String
+  source: String
   text: String!
-  info: String
 }
 
 type Surah {
@@ -108,11 +104,11 @@ type Query {
   versesByRub(rubNumber: Int!, language: String, translations: [Int!]): [Ayah!]!
   randomVerse(language: String, translations: [Int!]): Ayah
   ayah(surah: Int!, ayah: Int!, lang: String): Ayah
-  translationResources(language: String, slug: String): [Translation!]!
-  translationResource(slug: String!): Translation
+  translationResources(language: String): [Translation!]!
+  translationResource(id: Int!): Translation
   translations(surah: Int!, ayah: Int!, lang: String): [Translation!]!
-  tafsirResources(language: String, slug: String): [Tafsir!]!
-  tafsirResource(slug: String!): Tafsir
+  tafsirResources(language: String): [Tafsir!]!
+  tafsirResource(source: String!): Tafsir
   tafsirs(surah: Int!, ayah: Int!, lang: String): [Tafsir!]!
   juzs: [Juz!]!
   juz(juzNumber: Int!): Juz

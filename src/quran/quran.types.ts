@@ -5,29 +5,20 @@ export class Translation {
   @Field(() => Int)
   id: number;
 
-  @Field()
-  name: string;
+  @Field(() => Int, { nullable: true })
+  surahId?: number;
 
-  @Field({ nullable: true })
-  author_name?: string;
-
-  @Field()
-  slug: string;
-
-  @Field()
-  language_name: string;
+  @Field(() => Int, { nullable: true })
+  ayahId?: number;
 
   @Field()
   language_code: string;
 
   @Field()
-  direction: string;
+  translator: string;
 
   @Field()
   text: string;
-
-  @Field({ nullable: true })
-  info?: string;
 }
 
 @ObjectType()
@@ -35,26 +26,23 @@ export class Tafsir {
   @Field(() => Int)
   id: number;
 
-  @Field()
-  name: string;
+  @Field(() => Int, { nullable: true })
+  surahId?: number;
 
-  @Field({ nullable: true })
-  author_name?: string;
-
-  @Field()
-  slug: string;
-
-  @Field()
-  language_name: string;
+  @Field(() => Int, { nullable: true })
+  ayahId?: number;
 
   @Field()
   language_code: string;
 
-  @Field()
-  text: string;
+  @Field({ nullable: true })
+  scholar?: string;
 
   @Field({ nullable: true })
-  info?: string;
+  source?: string;
+
+  @Field()
+  text: string;
 }
 
 @ObjectType()
