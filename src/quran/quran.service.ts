@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient, Prisma, Tafsir } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -76,7 +76,7 @@ export class QuranService {
         tafsirs: options?.tafsirs
           ? { where: { id: { in: options.tafsirs } } }
           : options?.lang
-            ? { where: { language_code: options.lang } }
+            ? { where: { languageCode: options.lang } }
             : false,
       },
     });
@@ -102,7 +102,7 @@ export class QuranService {
             ? { where: { languageCode: options.lang } }
             : true,
         tafsirs: options?.lang
-          ? { where: { language_code: options.lang } }
+          ? { where: { languageCode: options.lang } }
           : true,
       },
     });
@@ -321,26 +321,26 @@ export class QuranService {
       where: { surah: { surahId: surahNumber }, ayahNumber: ayahNumber },
       include: {
         tafsirs: {
-          where: lang ? { language_code: lang } : {},
+          where: lang ? { languageCode: lang } : {},
         },
       },
     });
-    return ayah?.tafsirs || [];
+    return (ayah?.tafsirs as Tafsir[]) || [];
   }
 
   async listTafsirs(lang?: string) {
     const tafsirs = await prisma.tafsir.findMany({
       where: {
-        ...(lang && { language_code: lang }),
+        ...(lang && { languageCode: lang }),
         ayahId: null, // Only get the template/resource tafsirs
       },
       orderBy: { source: 'asc' },
     });
 
-    // Manually filter to get distinct source + language_code combinations
+    // Manually filter to get distinct source + languageCode combinations
     const seen = new Set<string>();
     return tafsirs.filter((t) => {
-      const key = `${t.source}-${t.language_code}`;
+      const key = `${t.source}-${t.languageCode}`;
       if (seen.has(key)) return false;
       seen.add(key);
       return true;

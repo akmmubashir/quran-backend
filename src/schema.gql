@@ -17,10 +17,12 @@ type Tafsir {
   id: Int!
   surahId: Int
   ayahId: Int
-  language_code: String!
+  languageCode: String!
+  ayahText: String!
+  ayahGroupStart: Int
+  ayahGroupEnd: Int
   scholar: String
   source: String
-  text: String!
 }
 
 type Surah {

@@ -40,16 +40,22 @@ export class Tafsir {
   ayahId?: number;
 
   @Field()
-  language_code: string;
+  languageCode: string;
+
+  @Field()
+  ayahText: string;
+
+  @Field(() => Int, { nullable: true })
+  ayahGroupStart?: number;
+
+  @Field(() => Int, { nullable: true })
+  ayahGroupEnd?: number;
 
   @Field({ nullable: true })
   scholar?: string;
 
   @Field({ nullable: true })
   source?: string;
-
-  @Field()
-  text: string;
 }
 
 @ObjectType()
