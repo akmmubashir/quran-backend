@@ -10,7 +10,7 @@ export class QuranService {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async listSurahs(_lang?: string) {
     const surahs = await prisma.surah.findMany({
-      orderBy: { number: 'asc' },
+      orderBy: { surahId: 'asc' },
     });
     return surahs;
   }
@@ -24,7 +24,7 @@ export class QuranService {
     perPage?: number,
   ) {
     const surah = await prisma.surah.findUnique({
-      where: { number: surahNumber },
+      where: { surahId: surahNumber },
       include: {
         ...(includeAyahs && {
           ayahs: {
@@ -63,7 +63,7 @@ export class QuranService {
 
     const ayah = await prisma.ayah.findFirst({
       where: {
-        surah: { number: surahNum },
+        surah: { surahId: surahNum },
         ayahNumber: ayahNum,
       },
       include: {
@@ -93,7 +93,7 @@ export class QuranService {
     },
   ) {
     const ayah = await prisma.ayah.findFirst({
-      where: { surah: { number: surahNumber }, ayahNumber: ayahNumber },
+      where: { surah: { surahId: surahNumber }, ayahNumber: ayahNumber },
       include: {
         surah: true,
         translations: options?.translations
@@ -123,7 +123,7 @@ export class QuranService {
 
     const [ayahs, total] = await Promise.all([
       prisma.ayah.findMany({
-        where: { surah: { number: surahNumber } },
+        where: { surah: { surahId: surahNumber } },
         include: {
           translations: options?.translations
             ? { where: { id: { in: options.translations } } }
@@ -136,7 +136,7 @@ export class QuranService {
         take: perPage,
       }),
       prisma.ayah.count({
-        where: { surah: { number: surahNumber } },
+        where: { surah: { surahId: surahNumber } },
       }),
     ]);
 
@@ -278,7 +278,7 @@ export class QuranService {
     lang?: string,
   ) {
     const ayah = await prisma.ayah.findFirst({
-      where: { surah: { number: surahNumber }, ayahNumber: ayahNumber },
+      where: { surah: { surahId: surahNumber }, ayahNumber: ayahNumber },
       include: {
         translations: {
           where: lang ? { language_code: lang } : {},
@@ -317,7 +317,7 @@ export class QuranService {
 
   async getTafsirs(surahNumber: number, ayahNumber: number, lang?: string) {
     const ayah = await prisma.ayah.findFirst({
-      where: { surah: { number: surahNumber }, ayahNumber: ayahNumber },
+      where: { surah: { surahId: surahNumber }, ayahNumber: ayahNumber },
       include: {
         tafsirs: {
           where: lang ? { language_code: lang } : {},

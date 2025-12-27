@@ -23,18 +23,16 @@ type Tafsir {
 
 type Surah {
   id: Int!
-  number: Int!
-  name_ar: String!
-  name_en: String
-  name_simple: String
-  name_complex: String
-  transliterated_name: String
-  revelation: String
-  revelation_order: Int
-  total_ayahs: Int!
-  bismillah_pre: Boolean!
+  surahId: Int!
+  nameComplex: String
+  nameArabic: String!
+  nameEnglish: String
+  surahinfo: String
+  revelationOrder: Int
+  revelationPlace: String
+  ayahCount: Int!
+  bismillahPre: Boolean!
   pages: [Int!]
-  surah_info: String
   ayahs: [Ayah!]
 }
 

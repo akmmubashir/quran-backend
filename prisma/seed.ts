@@ -70,7 +70,7 @@ async function main() {
   for (const s of surahList) {
     const exists = await prisma.surah.findUnique({
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      where: { number: s.surah_number },
+      where: { surahId: s.surah_number },
       include: { ayahs: true },
     });
 
@@ -152,15 +152,25 @@ async function main() {
       await prisma.surah.create({
         data: {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          number: s.surah_number,
+          surahId: s.surah_number,
           // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          name_ar: s.name_ar,
+          nameArabic: s.name_ar,
           // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          name_en: s.name_en ?? null,
+          nameEnglish: s.name_en ?? null,
           // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          revelation: s.revelation ?? null,
+          nameComplex: s.name_complex ?? s.name_simple ?? null,
           // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          total_ayahs: s.ayahs.length,
+          revelationPlace: s.revelation ?? null,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          revelationOrder: s.revelation_order ?? null,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          ayahCount: s.ayahs.length,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          bismillahPre: s.bismillah_pre ?? true,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          pages: Array.isArray(s.pages) ? s.pages : [],
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          surahinfo: s.surah_info ?? null,
           ayahs: {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
             create: s.ayahs.map((a: any) => ({

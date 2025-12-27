@@ -51,40 +51,34 @@ export class Surah {
   id: number;
 
   @Field(() => Int)
-  number: number;
+  surahId: number;
+
+  @Field({ nullable: true })
+  nameComplex?: string;
 
   @Field()
-  name_ar: string;
+  nameArabic: string;
 
   @Field({ nullable: true })
-  name_en?: string;
+  nameEnglish?: string;
 
   @Field({ nullable: true })
-  name_simple?: string;
-
-  @Field({ nullable: true })
-  name_complex?: string;
-
-  @Field({ nullable: true })
-  transliterated_name?: string;
-
-  @Field({ nullable: true })
-  revelation?: string;
+  surahinfo?: string;
 
   @Field(() => Int, { nullable: true })
-  revelation_order?: number;
+  revelationOrder?: number;
+
+  @Field({ nullable: true })
+  revelationPlace?: string;
 
   @Field(() => Int)
-  total_ayahs: number;
+  ayahCount: number;
 
   @Field()
-  bismillah_pre: boolean;
+  bismillahPre: boolean;
 
   @Field(() => [Int], { nullable: true })
   pages?: number[];
-
-  @Field({ nullable: true })
-  surah_info?: string;
 
   @Field(() => [Ayah], { nullable: true })
   ayahs?: Ayah[];

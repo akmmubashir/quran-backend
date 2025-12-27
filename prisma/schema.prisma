@@ -28,23 +28,20 @@ datasource db {
 }
 
 model Surah {
-  id                  Int           @id @default(autoincrement())
-  number              Int           @unique
-  name_ar             String
-  name_en             String?
-  name_simple         String?
-  name_complex        String?
-  transliterated_name String?
-  revelation          String?       // 'meccan' or 'medinan'
-  revelation_order    Int?
-  total_ayahs         Int
-  bismillah_pre       Boolean       @default(true)
-  pages               Int[]         @default([])
-  surah_info          String?       @db.Text // Chapter information/description
-  ayahs               Ayah[]
-  translations        Translation[]
-  tafsirs             Tafsir[]
-  createdAt           DateTime      @default(now())
+  id               Int      @id @default(autoincrement())
+  surahId          Int      @unique
+  nameComplex      String?
+  nameArabic       String
+  nameEnglish      String?
+  surahinfo        String?  @db.Text
+  revelationOrder  Int?
+  revelationPlace  String?
+  ayahCount        Int
+  bismillahPre     Boolean  @default(true)
+  pages            Int[]    @default([])
+  ayahs            Ayah[]
+  translations     Translation[]
+  tafsirs          Tafsir[]
 }
 
 model Ayah {
