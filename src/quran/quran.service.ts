@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -354,29 +354,23 @@ export class QuranService {
 
   // ==================== Juzs ====================
 
-  // eslint-disable-next-line @typescript-eslint/require-await
   async listJuzs() {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     return prisma.juz.findMany({ orderBy: { juzNumber: 'asc' } });
   }
 
-  // eslint-disable-next-line @typescript-eslint/require-await
   async getJuz(juzNumber: number) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     return prisma.juz.findUnique({ where: { juzNumber } });
   }
 
   // ==================== Languages ====================
 
-  // eslint-disable-next-line @typescript-eslint/require-await
   async listLanguages() {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     return prisma.language.findMany({ orderBy: { name: 'asc' } });
   }
 
-  // eslint-disable-next-line @typescript-eslint/require-await
   async getLanguage(isoCode: string) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    return prisma.language.findUnique({ where: { iso_code: isoCode } });
+    return prisma.language.findFirst({
+      where: { iso: isoCode } as unknown as Prisma.LanguageWhereInput,
+    });
   }
 }

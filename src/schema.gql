@@ -70,10 +70,9 @@ scalar JSON
 type Language {
   id: Int!
   name: String!
-  native_name: String
-  iso_code: String!
+  nativeName: String
+  iso: String!
   direction: String!
-  translations_count: Int!
 }
 
 type PaginationMeta {

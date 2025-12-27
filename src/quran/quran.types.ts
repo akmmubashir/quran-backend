@@ -160,16 +160,13 @@ export class Language {
   name: string;
 
   @Field({ nullable: true })
-  native_name?: string;
+  nativeName?: string;
 
   @Field()
-  iso_code: string;
+  iso: string;
 
   @Field()
   direction: string;
-
-  @Field(() => Int)
-  translations_count: number;
 }
 
 @ObjectType()

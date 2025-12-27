@@ -245,45 +245,30 @@ async function main() {
   }
   console.log('Seeding finished.');
 
-  // Seed languages from languages.json and compute translations_count
+  // Seed languages from languages.json
   if (Array.isArray(languagesList)) {
     for (const l of languagesList) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      const iso: string = l.iso_code ?? l.iso ?? l.code;
+      const iso: string = l.iso ?? l.iso_code ?? l.code;
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       const name: string = l.name ?? l.englishName ?? l.label;
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      const native_name: string | undefined = l.native_name ?? l.nativeName;
+      const nativeName: string | undefined = l.nativeName ?? l.native_name;
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       const direction: string = l.direction ?? (l.rtl ? 'rtl' : 'ltr');
 
-      // Compute translations_count as the number of distinct translation resources (translator) for this language
-      const resources = await prisma.translation.groupBy({
-        by: ['translator'],
-        where: {
-          language_code: iso,
-          ayahId: null,
-        },
-        _count: { translator: true },
-      });
-
-      const translations_count = resources.length;
-
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       await prisma.language.upsert({
-        where: { iso_code: iso },
-        update: { name, native_name, direction, translations_count },
+        where: { iso },
+        update: { name, nativeName, direction },
         create: {
           name,
-          native_name,
-          iso_code: iso,
+          nativeName,
+          iso,
           direction,
-          translations_count,
         },
       });
-      console.log(
-        `Upserted language ${iso} (${name}) with ${translations_count} translations`,
-      );
+      console.log(`Upserted language ${iso} (${name})`);
     }
   }
 }
