@@ -36,7 +36,7 @@ export class QuranService {
                   : false,
               tafsirs: false,
             },
-            orderBy: { ayah_number: 'asc' },
+            orderBy: { ayahNumber: 'asc' },
             ...(page &&
               perPage && {
                 skip: (page - 1) * perPage,
@@ -64,7 +64,7 @@ export class QuranService {
     const ayah = await prisma.ayah.findFirst({
       where: {
         surah: { number: surahNum },
-        ayah_number: ayahNum,
+        ayahNumber: ayahNum,
       },
       include: {
         surah: true,
@@ -93,7 +93,7 @@ export class QuranService {
     },
   ) {
     const ayah = await prisma.ayah.findFirst({
-      where: { surah: { number: surahNumber }, ayah_number: ayahNumber },
+      where: { surah: { number: surahNumber }, ayahNumber: ayahNumber },
       include: {
         surah: true,
         translations: options?.translations
@@ -131,7 +131,7 @@ export class QuranService {
               ? { where: { language_code: options.lang } }
               : false,
         },
-        orderBy: { ayah_number: 'asc' },
+        orderBy: { ayahNumber: 'asc' },
         skip: (page - 1) * perPage,
         take: perPage,
       }),
@@ -159,7 +159,7 @@ export class QuranService {
     },
   ) {
     const ayahs = await prisma.ayah.findMany({
-      where: { page_number: pageNumber },
+      where: { pageNumber: pageNumber },
       include: {
         surah: true,
         translations: options?.translations
@@ -168,7 +168,7 @@ export class QuranService {
             ? { where: { language_code: options.lang } }
             : false,
       },
-      orderBy: [{ surahId: 'asc' }, { ayah_number: 'asc' }],
+      orderBy: [{ surahId: 'asc' }, { ayahNumber: 'asc' }],
     });
     return ayahs;
   }
@@ -187,7 +187,7 @@ export class QuranService {
 
     const [ayahs, total] = await Promise.all([
       prisma.ayah.findMany({
-        where: { juz_number: juzNumber },
+        where: { juzNumber: juzNumber },
         include: {
           surah: true,
           translations: options?.translations
@@ -196,11 +196,11 @@ export class QuranService {
               ? { where: { language_code: options.lang } }
               : false,
         },
-        orderBy: [{ surahId: 'asc' }, { ayah_number: 'asc' }],
+        orderBy: [{ surahId: 'asc' }, { ayahNumber: 'asc' }],
         skip: (page - 1) * perPage,
         take: perPage,
       }),
-      prisma.ayah.count({ where: { juz_number: juzNumber } }),
+      prisma.ayah.count({ where: { juzNumber: juzNumber } }),
     ]);
 
     return {
@@ -219,7 +219,7 @@ export class QuranService {
     options?: { translations?: number[]; lang?: string },
   ) {
     const ayahs = await prisma.ayah.findMany({
-      where: { hizb_number: hizbNumber },
+      where: { hizbNumber: hizbNumber },
       include: {
         surah: true,
         translations: options?.translations
@@ -228,7 +228,7 @@ export class QuranService {
             ? { where: { language_code: options.lang } }
             : false,
       },
-      orderBy: [{ surahId: 'asc' }, { ayah_number: 'asc' }],
+      orderBy: [{ surahId: 'asc' }, { ayahNumber: 'asc' }],
     });
     return ayahs;
   }
@@ -238,7 +238,7 @@ export class QuranService {
     options?: { translations?: number[]; lang?: string },
   ) {
     const ayahs = await prisma.ayah.findMany({
-      where: { rub_el_hizb_number: rubNumber },
+      where: { rubElHizbNumber: rubNumber },
       include: {
         surah: true,
         translations: options?.translations
@@ -247,7 +247,7 @@ export class QuranService {
             ? { where: { language_code: options.lang } }
             : false,
       },
-      orderBy: [{ surahId: 'asc' }, { ayah_number: 'asc' }],
+      orderBy: [{ surahId: 'asc' }, { ayahNumber: 'asc' }],
     });
     return ayahs;
   }
@@ -278,7 +278,7 @@ export class QuranService {
     lang?: string,
   ) {
     const ayah = await prisma.ayah.findFirst({
-      where: { surah: { number: surahNumber }, ayah_number: ayahNumber },
+      where: { surah: { number: surahNumber }, ayahNumber: ayahNumber },
       include: {
         translations: {
           where: lang ? { language_code: lang } : {},
@@ -317,7 +317,7 @@ export class QuranService {
 
   async getTafsirs(surahNumber: number, ayahNumber: number, lang?: string) {
     const ayah = await prisma.ayah.findFirst({
-      where: { surah: { number: surahNumber }, ayah_number: ayahNumber },
+      where: { surah: { number: surahNumber }, ayahNumber: ayahNumber },
       include: {
         tafsirs: {
           where: lang ? { language_code: lang } : {},

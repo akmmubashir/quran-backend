@@ -87,7 +87,7 @@ async function main() {
           where: {
             surahId: exists.id,
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            ayah_number: a.ayah_number,
+            ayahNumber: a.ayah_number,
           },
         });
 
@@ -165,11 +165,23 @@ async function main() {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
             create: s.ayahs.map((a: any) => ({
               // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-              ayah_number: a.ayah_number,
+              ayahNumber: a.ayah_number,
               // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-              verse_key: `${s.surah_number}:${a.ayah_number}`,
+              ayahKey: `${s.surah_number}:${a.ayah_number}`,
               // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-              text_ar: a.text_ar,
+              textUthmani: a.text_uthmani ?? a.text_ar,
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+              textImlaei: a.text_imlaei ?? null,
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+              ayahInfo: a.ayah_info ?? null,
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+              pageNumber: a.page_number ?? null,
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+              juzNumber: a.juz_number ?? null,
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+              hizbNumber: a.hizb_number ?? null,
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+              rubElHizbNumber: a.rub_el_hizb_number ?? null,
               // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
               translations: a.translations
                 ? {

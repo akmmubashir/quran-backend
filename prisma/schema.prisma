@@ -48,31 +48,26 @@ model Surah {
 }
 
 model Ayah {
-  id                   Int             @id @default(autoincrement())
-  surah                Surah           @relation(fields: [surahId], references: [id])
-  surahId              Int
-  ayah_number          Int
-  verse_key            String          // Format: "1:1"
-  text_ar              String          @db.Text
-  text_uthmani         String?         @db.Text
-  text_uthmani_simple  String?         @db.Text
-  text_uthmani_tajweed String?         @db.Text
-  text_imlaei          String?         @db.Text
-  text_indopak         String?         @db.Text
-  juz_number           Int?
-  hizb_number          Int?
-  rub_el_hizb_number   Int?
-  page_number          Int?
-  sajdah               Boolean         @default(false)
-  sajdah_type          String?         // 'recommended' or 'obligatory'
-  translations         Translation[]
-  tafsirs              Tafsir[]
-  createdAt            DateTime        @default(now())
+  id                Int             @id @default(autoincrement())
+  surah             Surah           @relation(fields: [surahId], references: [id])
+  surahId           Int
+  ayahNumber        Int
+  ayahKey           String          // Format: "1:1"
+  pageNumber        Int?
+  juzNumber         Int?
+  hizbNumber        Int?
+  rubElHizbNumber   Int?
+  textUthmani       String?         @db.Text
+  textImlaei        String?         @db.Text
+  ayahInfo          String?         @db.Text
+  translations      Translation[]
+  tafsirs           Tafsir[]
+  createdAt         DateTime        @default(now())
 
-  @@unique([surahId, ayah_number])
-  @@index([verse_key])
-  @@index([juz_number])
-  @@index([page_number])
+  @@unique([surahId, ayahNumber])
+  @@index([ayahKey])
+  @@index([juzNumber])
+  @@index([pageNumber])
 }
 
 model Translation {

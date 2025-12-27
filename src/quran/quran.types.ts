@@ -96,46 +96,34 @@ export class Ayah {
   id: number;
 
   @Field(() => Int)
-  ayah_number: number;
+  ayahNumber: number;
 
   @Field()
-  verse_key: string;
+  ayahKey: string;
 
-  @Field()
-  text_ar: string;
-
-  @Field({ nullable: true })
-  text_uthmani?: string;
-
-  @Field({ nullable: true })
-  text_uthmani_simple?: string;
-
-  @Field({ nullable: true })
-  text_uthmani_tajweed?: string;
-
-  @Field({ nullable: true })
-  text_imlaei?: string;
-
-  @Field({ nullable: true })
-  text_indopak?: string;
+  @Field(() => Int)
+  surahId: number;
 
   @Field(() => Int, { nullable: true })
-  juz_number?: number;
+  pageNumber?: number;
 
   @Field(() => Int, { nullable: true })
-  hizb_number?: number;
+  juzNumber?: number;
 
   @Field(() => Int, { nullable: true })
-  rub_el_hizb_number?: number;
+  hizbNumber?: number;
 
   @Field(() => Int, { nullable: true })
-  page_number?: number;
-
-  @Field()
-  sajdah: boolean;
+  rubElHizbNumber?: number;
 
   @Field({ nullable: true })
-  sajdah_type?: string;
+  textUthmani?: string;
+
+  @Field({ nullable: true })
+  textImlaei?: string;
+
+  @Field({ nullable: true })
+  ayahInfo?: string;
 
   @Field(() => [Translation], { nullable: true })
   translations?: Translation[];

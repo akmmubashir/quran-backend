@@ -40,20 +40,16 @@ type Surah {
 
 type Ayah {
   id: Int!
-  ayah_number: Int!
-  verse_key: String!
-  text_ar: String!
-  text_uthmani: String
-  text_uthmani_simple: String
-  text_uthmani_tajweed: String
-  text_imlaei: String
-  text_indopak: String
-  juz_number: Int
-  hizb_number: Int
-  rub_el_hizb_number: Int
-  page_number: Int
-  sajdah: Boolean!
-  sajdah_type: String
+  ayahNumber: Int!
+  ayahKey: String!
+  surahId: Int!
+  pageNumber: Int
+  juzNumber: Int
+  hizbNumber: Int
+  rubElHizbNumber: Int
+  textUthmani: String
+  textImlaei: String
+  ayahInfo: String
   translations: [Translation!]
   tafsirs: [Tafsir!]
   surah: Surah
