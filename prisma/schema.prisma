@@ -73,12 +73,13 @@ model Translation {
   ayahId          Int?
   surah           Surah?    @relation(fields: [surahId], references: [id])
   surahId         Int?
-  language_code   String    // ISO language code (e.g., "en")
+  languageCode    String    // ISO language code (e.g., "en")
+  ayahText        String    @db.Text // The actual translation text
+  ayahGroupStart  Int?
+  ayahGroupEnd    Int?
   translator      String    // Translator/Author name
-  text            String    @db.Text // The actual translation text
-  createdAt       DateTime  @default(now())
 
-  @@index([language_code])
+  @@index([languageCode])
   @@index([ayahId])
   @@index([surahId])
 }

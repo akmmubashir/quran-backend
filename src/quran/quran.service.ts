@@ -32,7 +32,7 @@ export class QuranService {
               translations: translationIds
                 ? { where: { id: { in: translationIds } } }
                 : lang
-                  ? { where: { language_code: lang } }
+                  ? { where: { languageCode: lang } }
                   : false,
               tafsirs: false,
             },
@@ -71,7 +71,7 @@ export class QuranService {
         translations: options?.translations
           ? { where: { id: { in: options.translations } } }
           : options?.lang
-            ? { where: { language_code: options.lang } }
+            ? { where: { languageCode: options.lang } }
             : false,
         tafsirs: options?.tafsirs
           ? { where: { id: { in: options.tafsirs } } }
@@ -99,7 +99,7 @@ export class QuranService {
         translations: options?.translations
           ? { where: { id: { in: options.translations } } }
           : options?.lang
-            ? { where: { language_code: options.lang } }
+            ? { where: { languageCode: options.lang } }
             : true,
         tafsirs: options?.lang
           ? { where: { language_code: options.lang } }
@@ -128,7 +128,7 @@ export class QuranService {
           translations: options?.translations
             ? { where: { id: { in: options.translations } } }
             : options?.lang
-              ? { where: { language_code: options.lang } }
+              ? { where: { languageCode: options.lang } }
               : false,
         },
         orderBy: { ayahNumber: 'asc' },
@@ -165,7 +165,7 @@ export class QuranService {
         translations: options?.translations
           ? { where: { id: { in: options.translations } } }
           : options?.lang
-            ? { where: { language_code: options.lang } }
+            ? { where: { languageCode: options.lang } }
             : false,
       },
       orderBy: [{ surahId: 'asc' }, { ayahNumber: 'asc' }],
@@ -193,7 +193,7 @@ export class QuranService {
           translations: options?.translations
             ? { where: { id: { in: options.translations } } }
             : options?.lang
-              ? { where: { language_code: options.lang } }
+              ? { where: { languageCode: options.lang } }
               : false,
         },
         orderBy: [{ surahId: 'asc' }, { ayahNumber: 'asc' }],
@@ -225,7 +225,7 @@ export class QuranService {
         translations: options?.translations
           ? { where: { id: { in: options.translations } } }
           : options?.lang
-            ? { where: { language_code: options.lang } }
+            ? { where: { languageCode: options.lang } }
             : false,
       },
       orderBy: [{ surahId: 'asc' }, { ayahNumber: 'asc' }],
@@ -244,7 +244,7 @@ export class QuranService {
         translations: options?.translations
           ? { where: { id: { in: options.translations } } }
           : options?.lang
-            ? { where: { language_code: options.lang } }
+            ? { where: { languageCode: options.lang } }
             : false,
       },
       orderBy: [{ surahId: 'asc' }, { ayahNumber: 'asc' }],
@@ -263,7 +263,7 @@ export class QuranService {
         translations: options?.translations
           ? { where: { id: { in: options.translations } } }
           : options?.lang
-            ? { where: { language_code: options.lang } }
+            ? { where: { languageCode: options.lang } }
             : false,
       },
     });
@@ -281,26 +281,27 @@ export class QuranService {
       where: { surah: { surahId: surahNumber }, ayahNumber: ayahNumber },
       include: {
         translations: {
-          where: lang ? { language_code: lang } : {},
+          where: lang ? { languageCode: lang } : {},
         },
       },
     });
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return ayah?.translations || [];
   }
 
   async listTranslations(lang?: string) {
     const translations = await prisma.translation.findMany({
       where: {
-        ...(lang && { language_code: lang }),
+        ...(lang && { languageCode: lang }),
         ayahId: null, // Only get the template/resource translations
       },
       orderBy: { translator: 'asc' },
     });
 
-    // Manually filter to get distinct translator + language_code combinations
+    // Manually filter to get distinct translator + languageCode combinations
     const seen = new Set<string>();
     return translations.filter((t) => {
-      const key = `${t.translator}-${t.language_code}`;
+      const key = `${t.translator}-${t.languageCode}`;
       if (seen.has(key)) return false;
       seen.add(key);
       return true;

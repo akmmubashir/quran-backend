@@ -13,13 +13,19 @@ export class Translation {
   ayahId?: number;
 
   @Field()
-  language_code: string;
+  languageCode: string;
+
+  @Field()
+  ayahText: string;
+
+  @Field(() => Int, { nullable: true })
+  ayahGroupStart?: number;
+
+  @Field(() => Int, { nullable: true })
+  ayahGroupEnd?: number;
 
   @Field()
   translator: string;
-
-  @Field()
-  text: string;
 }
 
 @ObjectType()

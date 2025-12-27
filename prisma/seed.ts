@@ -43,6 +43,7 @@ import path from 'path';
 
 const prisma = new PrismaClient();
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function slugify(input: string): string {
   return input
     .toLowerCase()
@@ -103,16 +104,16 @@ async function main() {
               // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
               data: a.translations.map((t: any) => {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                const language_code: string = t.language_code;
+                const languageCode: string = t.language_code;
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                 const translator: string = t.translator ?? 'Unknown';
                 return {
                   ayahId: ayah.id,
                   surahId: exists.id,
-                  language_code,
+                  languageCode,
                   translator,
                   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                  text: t.text,
+                  ayahText: t.text,
                 };
               }),
             });
@@ -198,15 +199,16 @@ async function main() {
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
                     create: a.translations.map((t: any) => {
                       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                      const language_code: string = t.language_code;
+                      const languageCode: string = t.language_code;
                       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                       const translator: string = t.translator ?? 'Unknown';
                       return {
-                        language_code,
+                        languageCode,
                         translator,
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                         surahId: s.surah_number,
                         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                        text: t.text,
+                        ayahText: t.text,
                       };
                     }),
                   }
@@ -226,6 +228,7 @@ async function main() {
                         language_code,
                         scholar,
                         source,
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                         surahId: s.surah_number,
                         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                         text: t.text,

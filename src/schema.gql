@@ -6,9 +6,11 @@ type Translation {
   id: Int!
   surahId: Int
   ayahId: Int
-  language_code: String!
+  languageCode: String!
+  ayahText: String!
+  ayahGroupStart: Int
+  ayahGroupEnd: Int
   translator: String!
-  text: String!
 }
 
 type Tafsir {
