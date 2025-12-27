@@ -55,13 +55,17 @@ type Ayah {
 
 type Juz {
   id: Int!
-  juz_number: Int!
-  name_ar: String
-  name_en: String
-  first_verse_key: String!
-  last_verse_key: String!
-  verses_count: Int!
+  juzNumber: Int!
+  ayahMapping: JSON
+  firstAyahId: Int
+  lastAyahId: Int
+  AyahsCount: Int!
 }
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
 
 type Language {
   id: Int!

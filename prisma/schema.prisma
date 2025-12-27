@@ -101,14 +101,12 @@ model Tafsir {
 }
 
 model Juz {
-  id              Int      @id @default(autoincrement())
-  juz_number      Int      @unique
-  name_ar         String?
-  name_en         String?
-  first_verse_key String
-  last_verse_key  String
-  verses_count    Int
-  createdAt       DateTime @default(now())
+  id           Int    @id @default(autoincrement())
+  juzNumber    Int    @unique
+  ayahMapping  Json?
+  firstAyahId  Int?
+  lastAyahId   Int?
+  AyahsCount   Int
 }
 
 model Language {

@@ -1,4 +1,5 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
+import GraphQLJSON from 'graphql-type-json';
 
 @ObjectType()
 export class Translation {
@@ -135,22 +136,19 @@ export class Juz {
   id: number;
 
   @Field(() => Int)
-  juz_number: number;
+  juzNumber: number;
 
-  @Field({ nullable: true })
-  name_ar?: string;
+  @Field(() => GraphQLJSON, { nullable: true })
+  ayahMapping?: Record<string, string>;
 
-  @Field({ nullable: true })
-  name_en?: string;
+  @Field(() => Int, { nullable: true })
+  firstAyahId?: number;
 
-  @Field()
-  first_verse_key: string;
-
-  @Field()
-  last_verse_key: string;
+  @Field(() => Int, { nullable: true })
+  lastAyahId?: number;
 
   @Field(() => Int)
-  verses_count: number;
+  AyahsCount: number;
 }
 
 @ObjectType()

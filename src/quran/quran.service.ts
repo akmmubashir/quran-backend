@@ -357,13 +357,13 @@ export class QuranService {
   // eslint-disable-next-line @typescript-eslint/require-await
   async listJuzs() {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    return prisma.juz.findMany({ orderBy: { juz_number: 'asc' } });
+    return prisma.juz.findMany({ orderBy: { juzNumber: 'asc' } });
   }
 
   // eslint-disable-next-line @typescript-eslint/require-await
   async getJuz(juzNumber: number) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    return prisma.juz.findUnique({ where: { juz_number: juzNumber } });
+    return prisma.juz.findUnique({ where: { juzNumber } });
   }
 
   // ==================== Languages ====================
