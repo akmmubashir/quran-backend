@@ -26,6 +26,15 @@ export class Translation {
 
   @Field()
   translator: string;
+
+  @Field({ defaultValue: 'published' })
+  status: string;
+
+  @Field()
+  createdAt: Date;
+
+  @Field({ nullable: true })
+  updatedAt?: Date;
 }
 
 @ObjectType()
@@ -56,6 +65,15 @@ export class Tafsir {
 
   @Field({ nullable: true })
   source?: string;
+
+  @Field({ defaultValue: 'published' })
+  status: string;
+
+  @Field()
+  createdAt: Date;
+
+  @Field({ nullable: true })
+  updatedAt?: Date;
 }
 
 @ObjectType()

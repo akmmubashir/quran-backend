@@ -76,10 +76,14 @@ model Tafsir {
   ayahGroupEnd    Int?
   scholar         String?   // Scholar/Author name
   source          String?   // Source name (e.g., "Ibn Kathir")
+  status          String    @default("published") // draft, published, archived, etc.
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime? @updatedAt
 
   @@index([languageCode])
   @@index([ayahId])
   @@index([surahId])
+  @@index([status])
 }
 
 model Translation {
@@ -93,8 +97,12 @@ model Translation {
   ayahGroupEnd   Int?
   ayah           Ayah?  @relation(fields: [ayahId], references: [id])
   surah          Surah? @relation(fields: [surahId], references: [id])
+  status         String @default("published") // draft, published, archived, etc.
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime? @updatedAt
 
   @@index([ayahId])
   @@index([languageCode])
   @@index([surahId])
+  @@index([status])
 }
