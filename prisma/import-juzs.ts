@@ -39,8 +39,10 @@ async function fetchJuzs(): Promise<ApiJuz[]> {
 }
 
 function mapJuz(juz: ApiJuz) {
+  const juzNumber = juz.juz_number ?? juz.id;
   return {
-    juzNumber: juz.juz_number ?? juz.id,
+    id: juzNumber,
+    juzNumber,
     AyahsCount: juz.verses_count ?? 0,
     firstAyahId: juz.first_verse_id ?? null,
     lastAyahId: juz.last_verse_id ?? null,

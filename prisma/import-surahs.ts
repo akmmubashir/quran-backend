@@ -51,6 +51,7 @@ function mapChapter(chapter: ApiChapter) {
     : [];
 
   return {
+    id: chapter.id,
     surahId: chapter.id,
     nameArabic:
       chapter.name_arabic ?? chapter.name_simple ?? `Surah ${chapter.id}`,

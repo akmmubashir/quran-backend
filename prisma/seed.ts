@@ -153,6 +153,8 @@ async function main() {
       await prisma.surah.create({
         data: {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          id: s.surah_number,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           surahId: s.surah_number,
           // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           nameArabic: s.name_ar,

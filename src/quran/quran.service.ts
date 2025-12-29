@@ -374,4 +374,66 @@ export class QuranService {
       where: { iso: isoCode } as unknown as Prisma.LanguageWhereInput,
     });
   }
+
+  // ==================== New Quran Routes ====================
+
+  async getAyahsBySurahId(surahId: number, page?: number, perPage?: number) {
+    // If no pagination params provided, return all ayahs
+    if (!page && !perPage) {
+      return prisma.ayah.findMany({
+        where: { surah: { surahId } },
+        include: {
+          surah: true,
+          translations: false,
+          tafsirs: false,
+        },
+        orderBy: { ayahNumber: 'asc' },
+      });
+    }
+
+    // Otherwise apply pagination
+    const pageNum = page || 1;
+    const perPageNum = perPage || 10;
+
+    const [ayahs, total] = await Promise.all([
+      prisma.ayah.findMany({
+        where: { surah: { surahId } },
+        include: {
+          surah: true,
+          translations: false,
+          tafsirs: false,
+        },
+        orderBy: { ayahNumber: 'asc' },
+        skip: (pageNum - 1) * perPageNum,
+        take: perPageNum,
+      }),
+      prisma.ayah.count({
+        where: { surah: { surahId } },
+      }),
+    ]);
+
+    return {
+      ayahs,
+      pagination: {
+        currentPage: pageNum,
+        totalPages: Math.ceil(total / perPageNum),
+        perPage: perPageNum,
+        totalRecords: total,
+      },
+    };
+  }
+
+  async getAyahBySurahAndAyahNumber(surahId: number, ayahNumber: number) {
+    return prisma.ayah.findFirst({
+      where: {
+        surah: { surahId },
+        ayahNumber,
+      },
+      include: {
+        surah: true,
+        translations: true,
+        tafsirs: true,
+      },
+    });
+  }
 }

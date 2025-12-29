@@ -204,9 +204,7 @@ export class QuranController {
   // ==================== Translations ====================
 
   @Get('resources/translations')
-  async listTranslations(
-    @Query('language') lang?: string,
-  ) {
+  async listTranslations(@Query('language') lang?: string) {
     return this.service.listTranslations(lang);
   }
 
@@ -227,9 +225,7 @@ export class QuranController {
   // ==================== Tafsirs ====================
 
   @Get('resources/tafsirs')
-  async listTafsirs(
-    @Query('language') lang?: string,
-  ) {
+  async listTafsirs(@Query('language') lang?: string) {
     return this.service.listTafsirs(lang);
   }
 
@@ -273,5 +269,32 @@ export class QuranController {
   async getLanguage(@Param('iso_code') isoCode: string) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return this.service.getLanguage(isoCode);
+  }
+
+  // ==================== New Quran Routes ====================
+
+  @Get('quran/surah')
+  async getAllSurahs(@Query('lang') lang?: string) {
+    return this.service.listSurahs(lang);
+  }
+
+  @Get('quran/surah/:surah_id')
+  async getAyahsBySurah(
+    @Param('surah_id', ParseIntPipe) surahId: number,
+    @Query('page') page?: string,
+    @Query('per_page') perPage?: string,
+  ) {
+    const pageNum = page ? parseInt(page) : undefined;
+    const perPageNum = perPage ? parseInt(perPage) : undefined;
+
+    return this.service.getAyahsBySurahId(surahId, pageNum, perPageNum);
+  }
+
+  @Get('quran/surah/:surah_id/ayah/:ayah_id')
+  async getAyahBySurahAndAyah(
+    @Param('surah_id', ParseIntPipe) surahId: number,
+    @Param('ayah_id', ParseIntPipe) ayahId: number,
+  ) {
+    return this.service.getAyahBySurahAndAyahNumber(surahId, ayahId);
   }
 }
