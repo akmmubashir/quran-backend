@@ -172,8 +172,6 @@ async function main() {
           bismillahPre: s.bismillah_pre ?? true,
           // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           pages: Array.isArray(s.pages) ? s.pages : [],
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          surahinfo: s.surah_info ?? null,
           ayahs: {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
             create: s.ayahs.map((a: any) => ({

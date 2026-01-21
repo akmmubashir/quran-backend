@@ -5,8 +5,13 @@ import {
   Query,
   ParseIntPipe,
   DefaultValuePipe,
+  Put,
+  Body,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { QuranService } from './quran.service';
+import { UpdateSurahInfoDto } from './dto/update-surah-info.dto';
 
 @Controller()
 export class QuranController {
@@ -296,5 +301,80 @@ export class QuranController {
     @Param('ayah_id', ParseIntPipe) ayahId: number,
   ) {
     return this.service.getAyahBySurahAndAyahNumber(surahId, ayahId);
+  }
+
+  // ==================== Update Surah Info ====================
+
+  @Put('chapters/:id/info')
+  async updateChapterInfo(
+    @Param('id', ParseIntPipe) surahId: number,
+    @Body() updateDto: UpdateSurahInfoDto,
+  ) {
+    try {
+      return await this.service.updateSurahInfo(
+        surahId,
+        updateDto.languageId,
+        {
+          surahinfo: updateDto.surahinfo,
+        },
+      );
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Failed to update surah info',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Put('surahs/:id/info')
+  async updateSurahInfo(
+    @Param('id', ParseIntPipe) surahId: number,
+    @Body() updateDto: UpdateSurahInfoDto,
+  ) {
+    try {
+      return await this.service.updateSurahInfo(
+        surahId,
+        updateDto.languageId,
+        {
+          surahinfo: updateDto.surahinfo,
+        },
+      );
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Failed to update surah info',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Get('chapters/:surah_id/info/:language_id')
+  async getChapterInfo(
+    @Param('surah_id', ParseIntPipe) surahId: number,
+    @Param('language_id', ParseIntPipe) languageId: number,
+  ) {
+    try {
+      return await this.service.getSurahInfoByLanguage(surahId, languageId);
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Failed to fetch surah info',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Get('chapters/:surah_id/info')
+  async getChapterInfoByLanguages(
+    @Param('surah_id', ParseIntPipe) surahId: number,
+    @Query('languageId', new DefaultValuePipe(null), new ParseIntPipe({ optional: true }))
+    languageId?: number,
+  ) {
+    try {
+      return await this.service.getSurahInfosByLanguage(surahId, languageId);
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Failed to fetch surah info',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 }

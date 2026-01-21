@@ -51,7 +51,6 @@ function mapChapter(chapter: ApiChapter) {
     : [];
 
   return {
-    id: chapter.id,
     surahId: chapter.id,
     nameArabic:
       chapter.name_arabic ?? chapter.name_simple ?? `Surah ${chapter.id}`,
@@ -62,7 +61,6 @@ function mapChapter(chapter: ApiChapter) {
     ayahCount: chapter.verses_count ?? 0,
     bismillahPre: chapter.bismillah_pre ?? true,
     pages,
-    surahinfo: null,
   };
 }
 

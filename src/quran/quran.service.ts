@@ -436,4 +436,88 @@ export class QuranService {
       },
     });
   }
+
+  // ==================== Update Surah Info ====================
+
+  async updateSurahInfo(
+    surahId: number,
+    languageId: number,
+    updateData: {
+      surahinfo?: string;
+    },
+  ) {
+    // First, verify the surah exists
+    const surah = await prisma.surah.findUnique({
+      where: { surahId },
+    });
+
+    if (!surah) {
+      throw new Error(`Surah with ID ${surahId} not found`);
+    }
+
+    // Verify the language exists
+    const language = await prisma.language.findUnique({
+      where: { id: languageId },
+    });
+
+    if (!language) {
+      throw new Error(`Language with ID ${languageId} not found`);
+    }
+
+    // Upsert the SurahInfo record
+    const updatedSurahInfo = await prisma.surahInfo.upsert({
+      where: {
+        surahId_languageId: {
+          surahId,
+          languageId,
+        },
+      },
+      update: {
+        ...(updateData.surahinfo && { surahinfo: updateData.surahinfo }),
+      },
+      create: {
+        surahId,
+        languageId,
+        surahinfo: updateData.surahinfo,
+      },
+      include: {
+        surah: true,
+        language: true,
+      },
+    });
+
+    return {
+      success: true,
+      message: `Surah info updated successfully for language ${language.name}`,
+      data: updatedSurahInfo,
+    };
+  }
+
+  async getSurahInfoByLanguage(surahId: number, languageId: number) {
+    return prisma.surahInfo.findUnique({
+      where: {
+        surahId_languageId: {
+          surahId,
+          languageId,
+        },
+      },
+      include: {
+        surah: true,
+        language: true,
+      },
+    });
+  }
+
+  async getSurahInfosByLanguage(surahId: number, languageId?: number) {
+    return prisma.surahInfo.findMany({
+      where: {
+        surahId,
+        ...(languageId && { languageId }),
+      },
+      include: {
+        surah: true,
+        language: true,
+      },
+    });
+  }
 }

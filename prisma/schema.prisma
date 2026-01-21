@@ -40,11 +40,12 @@ model Juz {
 }
 
 model Language {
-  id         Int     @id @default(autoincrement())
+  id         Int         @id @default(autoincrement())
   name       String
-  direction  String  @default("ltr")
-  iso        String  @unique
+  direction  String      @default("ltr")
+  iso        String      @unique
   nativeName String?
+  surahInfos SurahInfo[]
 }
 
 model Surah {
@@ -58,10 +59,10 @@ model Surah {
   revelationOrder Int?
   revelationPlace String?
   surahId         Int           @unique
-  surahinfo       String?
   ayahs           Ayah[]
   tafsirs         Tafsir[]
   translations    Translation[]
+  surahInfos      SurahInfo[]
 }
 
 model Tafsir {
@@ -105,4 +106,19 @@ model Translation {
   @@index([languageCode])
   @@index([surahId])
   @@index([status])
+}
+
+model SurahInfo {
+  id              Int       @id @default(autoincrement())
+  surahId         Int
+  languageId      Int
+  surahinfo       String?   @db.Text
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime? @updatedAt
+  surah           Surah     @relation(fields: [surahId], references: [id], onDelete: Cascade)
+  language        Language  @relation(fields: [languageId], references: [id], onDelete: Cascade)
+
+  @@unique([surahId, languageId])
+  @@index([surahId])
+  @@index([languageId])
 }

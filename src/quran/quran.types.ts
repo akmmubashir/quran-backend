@@ -77,6 +77,24 @@ export class Tafsir {
 }
 
 @ObjectType()
+export class Language {
+  @Field(() => Int)
+  id: number;
+
+  @Field()
+  name: string;
+
+  @Field({ nullable: true })
+  nativeName?: string;
+
+  @Field()
+  iso: string;
+
+  @Field()
+  direction: string;
+}
+
+@ObjectType()
 export class Surah {
   @Field(() => Int)
   id: number;
@@ -84,17 +102,14 @@ export class Surah {
   @Field(() => Int)
   surahId: number;
 
-  @Field({ nullable: true })
-  nameComplex?: string;
-
   @Field()
   nameArabic: string;
 
   @Field({ nullable: true })
-  nameEnglish?: string;
+  nameComplex?: string;
 
   @Field({ nullable: true })
-  surahinfo?: string;
+  nameEnglish?: string;
 
   @Field(() => Int, { nullable: true })
   revelationOrder?: number;
@@ -113,6 +128,36 @@ export class Surah {
 
   @Field(() => [Ayah], { nullable: true })
   ayahs?: Ayah[];
+
+  @Field(() => [SurahInfo], { nullable: true })
+  surahInfos?: SurahInfo[];
+}
+
+@ObjectType()
+export class SurahInfo {
+  @Field(() => Int)
+  id: number;
+
+  @Field(() => Int)
+  surahId: number;
+
+  @Field(() => Int)
+  languageId: number;
+
+  @Field({ nullable: true })
+  surahinfo?: string;
+
+  @Field()
+  createdAt: Date;
+
+  @Field({ nullable: true })
+  updatedAt?: Date;
+
+  @Field(() => Surah, { nullable: true })
+  surah?: Surah;
+
+  @Field(() => Language, { nullable: true })
+  language?: Language;
 }
 
 @ObjectType()
@@ -182,24 +227,6 @@ export class Juz {
 }
 
 @ObjectType()
-export class Language {
-  @Field(() => Int)
-  id: number;
-
-  @Field()
-  name: string;
-
-  @Field({ nullable: true })
-  nativeName?: string;
-
-  @Field()
-  iso: string;
-
-  @Field()
-  direction: string;
-}
-
-@ObjectType()
 export class PaginationMeta {
   @Field(() => Int)
   currentPage: number;
@@ -230,4 +257,16 @@ export class PaginatedSurahs {
 
   @Field(() => PaginationMeta)
   pagination: PaginationMeta;
+}
+
+@ObjectType()
+export class UpdateSurahInfoResponse {
+  @Field()
+  success: boolean;
+
+  @Field()
+  message: string;
+
+  @Field(() => SurahInfo)
+  data: SurahInfo;
 }

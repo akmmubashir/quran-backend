@@ -36,19 +36,38 @@ type Tafsir {
   updatedAt: DateTime
 }
 
+type Language {
+  id: Int!
+  name: String!
+  nativeName: String
+  iso: String!
+  direction: String!
+}
+
 type Surah {
   id: Int!
   surahId: Int!
-  nameComplex: String
   nameArabic: String!
+  nameComplex: String
   nameEnglish: String
-  surahinfo: String
   revelationOrder: Int
   revelationPlace: String
   ayahCount: Int!
   bismillahPre: Boolean!
   pages: [Int!]
   ayahs: [Ayah!]
+  surahInfos: [SurahInfo!]
+}
+
+type SurahInfo {
+  id: Int!
+  surahId: Int!
+  languageId: Int!
+  surahinfo: String
+  createdAt: DateTime!
+  updatedAt: DateTime
+  surah: Surah
+  language: Language
 }
 
 type Ayah {
@@ -82,14 +101,6 @@ The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://
 """
 scalar JSON
 
-type Language {
-  id: Int!
-  name: String!
-  nativeName: String
-  iso: String!
-  direction: String!
-}
-
 type PaginationMeta {
   currentPage: Int!
   totalPages: Int!
@@ -100,6 +111,12 @@ type PaginationMeta {
 type PaginatedAyahs {
   ayahs: [Ayah!]!
   pagination: PaginationMeta!
+}
+
+type UpdateSurahInfoResponse {
+  success: Boolean!
+  message: String!
+  data: SurahInfo!
 }
 
 type Query {
@@ -126,4 +143,10 @@ type Query {
   juz(juzNumber: Int!): Juz
   languages: [Language!]!
   language(isoCode: String!): Language
+  surahInfo(surahId: Int!, languageId: Int!): SurahInfo
+  surahInfosByLanguage(surahId: Int!, languageId: Int): [SurahInfo!]!
+}
+
+type Mutation {
+  updateSurahInfo(surahId: Int!, languageId: Int!, surahinfo: String): UpdateSurahInfoResponse!
 }

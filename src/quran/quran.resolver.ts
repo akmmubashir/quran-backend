@@ -8,7 +8,10 @@ import {
   Tafsir,
   Juz,
   Language,
+  UpdateSurahInfoResponse,
+  SurahInfo,
 } from './quran.types';
+import { Mutation } from '@nestjs/graphql';
 
 @Resolver()
 export class QuranResolver {
@@ -252,5 +255,38 @@ export class QuranResolver {
   async language(@Args('isoCode', { type: () => String }) isoCode: string) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return this.service.getLanguage(isoCode);
+  }
+
+  // ==================== Surah Info Queries ====================
+
+  @Query(() => SurahInfo, { nullable: true })
+  async surahInfo(
+    @Args('surahId', { type: () => Int }) surahId: number,
+    @Args('languageId', { type: () => Int }) languageId: number,
+  ) {
+    return this.service.getSurahInfoByLanguage(surahId, languageId);
+  }
+
+  @Query(() => [SurahInfo])
+  async surahInfosByLanguage(
+    @Args('surahId', { type: () => Int }) surahId: number,
+    @Args('languageId', { type: () => Int, nullable: true })
+    languageId?: number,
+  ) {
+    return this.service.getSurahInfosByLanguage(surahId, languageId);
+  }
+
+  // ==================== Mutations ====================
+
+  @Mutation(() => UpdateSurahInfoResponse)
+  async updateSurahInfo(
+    @Args('surahId', { type: () => Int }) surahId: number,
+    @Args('languageId', { type: () => Int }) languageId: number,
+    @Args('surahinfo', { type: () => String, nullable: true })
+    surahinfo?: string,
+  ) {
+    return this.service.updateSurahInfo(surahId, languageId, {
+      surahinfo,
+    });
   }
 }
