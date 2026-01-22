@@ -63,7 +63,6 @@ function mapVerse(chapter: number, surahPk: number, verse: ApiVerse) {
     ayahKey: verse.verse_key ?? `${chapter}:${ayahNumber}`,
     textUthmani: verse.text_uthmani ?? null,
     textImlaei: verse.text_imlaei ?? null,
-    ayahInfo: null,
     pageNumber: verse.page_number ?? null,
     juzNumber: verse.juz_number ?? null,
     hizbNumber: verse.hizb_number ?? null,

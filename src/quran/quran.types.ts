@@ -192,9 +192,6 @@ export class Ayah {
   @Field({ nullable: true })
   textImlaei?: string;
 
-  @Field({ nullable: true })
-  ayahInfo?: string;
-
   @Field(() => [Translation], { nullable: true })
   translations?: Translation[];
 

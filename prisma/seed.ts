@@ -184,8 +184,6 @@ async function main() {
               // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
               textImlaei: a.text_imlaei ?? null,
               // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-              ayahInfo: a.ayah_info ?? null,
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
               pageNumber: a.page_number ?? null,
               // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
               juzNumber: a.juz_number ?? null,
