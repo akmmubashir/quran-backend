@@ -12,6 +12,8 @@ import {
 } from '@nestjs/common';
 import { QuranService } from './quran.service';
 import { UpdateSurahInfoDto } from './dto/update-surah-info.dto';
+import { UpdateAyahContentDto } from './dto/update-ayah-content.dto';
+import { UpdateAyahGroupDto } from './dto/update-ayah-group.dto';
 
 @Controller()
 export class QuranController {
@@ -311,13 +313,9 @@ export class QuranController {
     @Body() updateDto: UpdateSurahInfoDto,
   ) {
     try {
-      return await this.service.updateSurahInfo(
-        surahId,
-        updateDto.languageId,
-        {
-          surahinfo: updateDto.surahinfo,
-        },
-      );
+      return await this.service.updateSurahInfo(surahId, updateDto.languageId, {
+        surahinfo: updateDto.surahinfo,
+      });
     } catch (error) {
       throw new HttpException(
         error.message || 'Failed to update surah info',
@@ -332,13 +330,9 @@ export class QuranController {
     @Body() updateDto: UpdateSurahInfoDto,
   ) {
     try {
-      return await this.service.updateSurahInfo(
-        surahId,
-        updateDto.languageId,
-        {
-          surahinfo: updateDto.surahinfo,
-        },
-      );
+      return await this.service.updateSurahInfo(surahId, updateDto.languageId, {
+        surahinfo: updateDto.surahinfo,
+      });
     } catch (error) {
       throw new HttpException(
         error.message || 'Failed to update surah info',
@@ -365,7 +359,11 @@ export class QuranController {
   @Get('chapters/:surah_id/info')
   async getChapterInfoByLanguages(
     @Param('surah_id', ParseIntPipe) surahId: number,
-    @Query('languageId', new DefaultValuePipe(null), new ParseIntPipe({ optional: true }))
+    @Query(
+      'languageId',
+      new DefaultValuePipe(null),
+      new ParseIntPipe({ optional: true }),
+    )
     languageId?: number,
   ) {
     try {
@@ -373,6 +371,98 @@ export class QuranController {
     } catch (error) {
       throw new HttpException(
         error.message || 'Failed to fetch surah info',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  // ==================== Ayah Grouping ====================
+
+  @Put('ayahs/group')
+  async createAyahGroup(@Body() updateDto: UpdateAyahGroupDto) {
+    try {
+      return await this.service.createAyahGroup(
+        updateDto.surahId,
+        updateDto.ayahNumbers,
+      );
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Failed to create ayah group',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Put('ayahs/ungroup')
+  async removeAyahGroup(@Body() updateDto: UpdateAyahGroupDto) {
+    try {
+      return await this.service.removeAyahGroup(
+        updateDto.surahId,
+        updateDto.ayahNumbers,
+      );
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Failed to remove ayah group',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  // ==================== Combined Ayah Content ====================
+
+  @Put('ayahs/:surahId/:ayahNumber')
+  async updateAyahContent(
+    @Param('surahId', ParseIntPipe) surahId: number,
+    @Param('ayahNumber', ParseIntPipe) ayahNumber: number,
+    @Body() updateDto: UpdateAyahContentDto,
+  ) {
+    try {
+      return await this.service.updateGroupedAyahContent(
+        surahId,
+        ayahNumber,
+        updateDto,
+      );
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Failed to update ayah content',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Get('ayahs/:surahId/:ayahNumber')
+  async getAyahWithContent(
+    @Param('surahId', ParseIntPipe) surahId: number,
+    @Param('ayahNumber', ParseIntPipe) ayahNumber: number,
+    @Query('languageId', ParseIntPipe) languageId?: number,
+  ) {
+    try {
+      return await this.service.getAyahWithContent(
+        surahId,
+        ayahNumber,
+        languageId,
+      );
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Failed to fetch ayah content',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  // ==================== Ayah Content Tables (TypeORM) ====================
+  @Get('ayah-content')
+  async getAyahContentByGroup(
+    @Query('surahId', ParseIntPipe) surahId: number,
+    @Query('startAyah', ParseIntPipe) startAyah: number,
+    @Query('endAyah', ParseIntPipe) endAyah: number,
+    @Query('languageId', new DefaultValuePipe(null), new ParseIntPipe({ optional: true })) languageId?: number,
+  ) {
+    try {
+      return await this.service.getAyahContentByGroup(surahId, startAyah, endAyah, languageId ?? undefined);
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Failed to fetch ayah content from tables',
         HttpStatus.BAD_REQUEST,
       );
     }

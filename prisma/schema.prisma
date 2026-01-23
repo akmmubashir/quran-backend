@@ -19,6 +19,9 @@ model Ayah {
   rubElHizbNumber Int?
   textImlaei      String?
   textUthmani     String?
+  ayahGroupStart  Int?
+  ayahGroupEnd    Int?
+  ayahInfo        String?       @db.Text
   surah           Surah         @relation(fields: [surahId], references: [id])
   tafsirs         Tafsir[]
   translations    Translation[]

@@ -1,10 +1,24 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
 import { PrismaClient, Prisma, Tafsir } from '@prisma/client';
+import { AyahGroup, AyahInfo, AyahTranslation, AyahTafsir } from '../ayah-content/entities/ayah-content.entity';
 
 const prisma = new PrismaClient();
 
 @Injectable()
 export class QuranService {
+  constructor(
+    @InjectRepository(AyahGroup)
+    private ayahGroupRepository: Repository<AyahGroup>,
+    @InjectRepository(AyahInfo)
+    private ayahInfoRepository: Repository<AyahInfo>,
+    @InjectRepository(AyahTranslation)
+    private ayahTranslationRepository: Repository<AyahTranslation>,
+    @InjectRepository(AyahTafsir)
+    private ayahTafsirRepository: Repository<AyahTafsir>,
+  ) {}
+
   // ==================== Chapters/Surahs ====================
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -519,5 +533,453 @@ export class QuranService {
         language: true,
       },
     });
+  }
+
+  // ==================== Ayah Grouping ====================
+
+  async createAyahGroup(surahId: number, ayahNumbers: number[]) {
+    // Validate ayahNumbers array
+    if (!ayahNumbers || ayahNumbers.length < 2) {
+      throw new Error('At least 2 ayahs are required to create a group');
+    }
+
+    // Sort the ayah numbers
+    const sortedAyahNumbers = ayahNumbers.sort((a, b) => a - b);
+    const groupStart = sortedAyahNumbers[0];
+    const groupEnd = sortedAyahNumbers[sortedAyahNumbers.length - 1];
+
+    // Check if ayahs exist
+    const ayahs = await prisma.ayah.findMany({
+      where: {
+        surahId,
+        ayahNumber: { in: sortedAyahNumbers },
+      },
+    });
+
+    if (ayahs.length !== sortedAyahNumbers.length) {
+      throw new Error('One or more ayahs not found');
+    }
+
+    // Create or update ayah group in TypeORM
+    let ayahGroup = await this.ayahGroupRepository.findOne({
+      where: {
+        surahId,
+        startAyah: groupStart,
+        endAyah: groupEnd,
+      },
+    });
+
+    if (!ayahGroup) {
+      ayahGroup = this.ayahGroupRepository.create({
+        surahId,
+        startAyah: groupStart,
+        endAyah: groupEnd,
+        isGrouped: true,
+      });
+      await this.ayahGroupRepository.save(ayahGroup);
+    }
+
+    // Update all ayahs in the group (for backward compatibility)
+    await prisma.$executeRaw`
+      UPDATE "Ayah"
+      SET "ayahGroupStart" = ${groupStart}, "ayahGroupEnd" = ${groupEnd}
+      WHERE "surahId" = ${surahId}
+        AND "ayahNumber" = ANY(${sortedAyahNumbers})
+    `;
+
+    return {
+      success: true,
+      message: `Successfully grouped ayahs ${groupStart}-${groupEnd} in surah ${surahId}`,
+      data: {
+        surahId,
+        ayahGroupStart: groupStart,
+        ayahGroupEnd: groupEnd,
+        ayahCount: sortedAyahNumbers.length,
+        groupId: ayahGroup.id,
+      },
+    };
+  }
+
+  async removeAyahGroup(surahId: number, ayahNumbers: number[]) {
+    // Validate ayahNumbers array
+    if (!ayahNumbers || ayahNumbers.length === 0) {
+      throw new Error('At least 1 ayah is required to remove group');
+    }
+
+    // Find and delete the ayah group based on provided range (min/max)
+    const sorted = [...ayahNumbers].sort((a, b) => a - b);
+    const minAyah = sorted[0];
+    const maxAyah = sorted[sorted.length - 1];
+
+    const ayahGroup = await this.ayahGroupRepository.findOne({
+      where: { surahId, startAyah: minAyah, endAyah: maxAyah },
+    });
+
+    if (ayahGroup) {
+      await this.ayahGroupRepository.remove(ayahGroup);
+    }
+
+    // Update all ayahs to remove grouping (using raw SQL to avoid type issues)
+    // Update all ayahs to remove grouping (backward compatibility)
+    await prisma.$executeRaw`
+      UPDATE "Ayah"
+      SET "ayahGroupStart" = NULL, "ayahGroupEnd" = NULL
+      WHERE "surahId" = ${surahId}
+        AND "ayahNumber" = ANY(${ayahNumbers})
+    `;
+
+    return {
+      success: true,
+      message: `Successfully ungrouped ayahs in surah ${surahId}`,
+      data: {
+        surahId,
+        ayahNumbers,
+        ungroupedCount: ayahNumbers.length,
+      },
+    };
+  }
+
+  // ==================== Combined Ayah Content ====================
+
+  async updateAyahContent(
+    surahId: number,
+    ayahNumber: number,
+    updateData: {
+      languageId: number;
+      ayahInfo?: string;
+      translationText?: string;
+      translator?: string;
+      tafsirText?: string;
+      tafsirScholar?: string;
+    },
+  ) {
+    // Delegate to grouped content updater (handles single as group of one)
+    return this.updateGroupedAyahContent(surahId, ayahNumber, updateData);
+  }
+
+  async getAyahWithContent(
+    surahId: number,
+    ayahNumber: number,
+    languageId?: number,
+  ) {
+    // Verify the requested ayah exists
+    const requestedAyah = await prisma.ayah.findFirst({
+      where: { surahId, ayahNumber },
+      include: { surah: true },
+    });
+
+    if (!requestedAyah) {
+      throw new Error(
+        `Ayah ${ayahNumber} not found in surah ${surahId}`,
+      );
+    }
+
+    // Find the ayah group containing this ayah (grouped or single)
+    const ayahGroup = await this.ayahGroupRepository.findOne({
+      where: {
+        surahId,
+        startAyah: LessThanOrEqual(ayahNumber),
+        endAyah: MoreThanOrEqual(ayahNumber),
+      },
+    });
+
+      // Fetch all ayahs in the group with Arabic text
+      const groupedAyahs = ayahGroup
+        ? await prisma.ayah.findMany({
+            where: {
+              surahId,
+              ayahNumber: {
+                gte: ayahGroup.startAyah,
+                lte: ayahGroup.endAyah,
+              },
+            },
+            include: { surah: true },
+            orderBy: { ayahNumber: 'asc' },
+          })
+        : [requestedAyah];
+
+      // Fetch ayah content from TypeORM tables if group exists
+      let ayahInfo: any = null;
+      let ayahTranslation: any = null;
+      let ayahTafsir: any = null;
+
+      if (ayahGroup) {
+        if (languageId) {
+          // Fetch content for specific language
+          ayahInfo = await this.ayahInfoRepository.findOne({
+            where: {
+              ayahGroupId: ayahGroup.id,
+              languageId: languageId,
+            },
+          });
+
+          ayahTranslation = await this.ayahTranslationRepository.findOne({
+            where: {
+              ayahGroupId: ayahGroup.id,
+              languageId: languageId,
+            },
+          });
+
+          ayahTafsir = await this.ayahTafsirRepository.findOne({
+            where: {
+              ayahGroupId: ayahGroup.id,
+              languageId: languageId,
+            },
+          });
+        } else {
+          // Fetch all languages
+          ayahInfo = await this.ayahInfoRepository.find({
+            where: {
+              ayahGroupId: ayahGroup.id,
+            },
+          });
+
+          ayahTranslation = await this.ayahTranslationRepository.find({
+            where: {
+              ayahGroupId: ayahGroup.id,
+            },
+          });
+
+          ayahTafsir = await this.ayahTafsirRepository.find({
+            where: {
+              ayahGroupId: ayahGroup.id,
+            },
+          });
+        }
+      }
+
+      return {
+        success: true,
+        isGrouped: !!ayahGroup && ayahGroup.startAyah !== ayahNumber,
+        groupId: ayahGroup?.id,
+        groupStart: ayahGroup?.startAyah ?? ayahNumber,
+        groupEnd: ayahGroup?.endAyah ?? ayahNumber,
+        data: groupedAyahs,
+        ayahInfo,
+        ayahTranslation,
+        ayahTafsir,
+      };
+    }
+
+  async getAyahContentByGroup(
+    surahId: number,
+    startAyah: number,
+    endAyah: number,
+    languageId?: number,
+  ) {
+    // Find the exact group
+    const ayahGroup = await this.ayahGroupRepository.findOne({
+      where: { surahId, startAyah, endAyah },
+    });
+
+    if (!ayahGroup) {
+      return {
+        success: true,
+        groupId: null,
+        surahId,
+        startAyah,
+        endAyah,
+        ayahInfo: languageId
+          ? null
+          : [],
+        ayahTranslation: languageId
+          ? null
+          : [],
+        ayahTafsir: languageId
+          ? null
+          : [],
+      };
+    }
+
+    if (languageId) {
+      const [info, translation, tafsir] = await Promise.all([
+        this.ayahInfoRepository.findOne({ where: { ayahGroupId: ayahGroup.id, languageId } }),
+        this.ayahTranslationRepository.findOne({ where: { ayahGroupId: ayahGroup.id, languageId } }),
+        this.ayahTafsirRepository.findOne({ where: { ayahGroupId: ayahGroup.id, languageId } }),
+      ]);
+
+      return {
+        success: true,
+        groupId: ayahGroup.id,
+        surahId,
+        startAyah,
+        endAyah,
+        ayahInfo: info,
+        ayahTranslation: translation,
+        ayahTafsir: tafsir,
+      };
+    }
+
+    const [infos, translations, tafsirs] = await Promise.all([
+      this.ayahInfoRepository.find({ where: { ayahGroupId: ayahGroup.id } }),
+      this.ayahTranslationRepository.find({ where: { ayahGroupId: ayahGroup.id } }),
+      this.ayahTafsirRepository.find({ where: { ayahGroupId: ayahGroup.id } }),
+    ]);
+
+    return {
+      success: true,
+      groupId: ayahGroup.id,
+      surahId,
+      startAyah,
+      endAyah,
+      ayahInfo: infos,
+      ayahTranslation: translations,
+      ayahTafsir: tafsirs,
+    };
+  }
+
+  async updateGroupedAyahContent(
+    surahId: number,
+    ayahNumber: number,
+    updateData: {
+      languageId: number;
+      ayahInfo?: string;
+      translationText?: string;
+      translator?: string;
+      tafsirText?: string;
+      tafsirScholar?: string;
+      tafsirSource?: string;
+    },
+  ) {
+    // Verify ayah exists
+    const ayahExists = await prisma.ayah.findFirst({ where: { surahId, ayahNumber } });
+    if (!ayahExists) {
+      throw new Error(`Ayah ${ayahNumber} not found in surah ${surahId}`);
+    }
+
+    // Verify language exists
+    const language = await prisma.language.findUnique({
+      where: { id: updateData.languageId },
+    });
+
+    if (!language) {
+      throw new Error(`Language with ID ${updateData.languageId} not found`);
+    }
+
+    // Find or create the ayah group via TypeORM containment
+    let ayahGroup = await this.ayahGroupRepository.findOne({
+      where: {
+        surahId,
+        startAyah: LessThanOrEqual(ayahNumber),
+        endAyah: MoreThanOrEqual(ayahNumber),
+      },
+    });
+
+    if (!ayahGroup) {
+      // Create a single-ayah group if none exists
+      ayahGroup = await this.ayahGroupRepository.save({
+        surahId,
+        startAyah: ayahNumber,
+        endAyah: ayahNumber,
+        isGrouped: false,
+        status: 'active',
+      });
+    }
+
+      // Update or create ayah info
+      if (updateData.ayahInfo !== undefined) {
+        const existingInfo = await this.ayahInfoRepository.findOne({
+          where: {
+            ayahGroupId: ayahGroup.id,
+            languageId: updateData.languageId,
+          },
+        });
+
+        if (existingInfo) {
+          await this.ayahInfoRepository.update(
+            {
+              ayahGroupId: ayahGroup.id,
+              languageId: updateData.languageId,
+            },
+            {
+              infoText: updateData.ayahInfo,
+            },
+          );
+        } else {
+          await this.ayahInfoRepository.save({
+            ayahGroupId: ayahGroup.id,
+            languageId: updateData.languageId,
+            infoText: updateData.ayahInfo,
+            status: 'active',
+          });
+        }
+      }
+
+      // Update or create translation
+      if (updateData.translationText !== undefined || updateData.translator !== undefined) {
+        const existingTranslation = await this.ayahTranslationRepository.findOne({
+          where: {
+            ayahGroupId: ayahGroup.id,
+            languageId: updateData.languageId,
+          },
+        });
+
+        if (existingTranslation) {
+          await this.ayahTranslationRepository.update(
+            {
+              ayahGroupId: ayahGroup.id,
+              languageId: updateData.languageId,
+            },
+            {
+              ...(updateData.translationText !== undefined && {
+                translationText: updateData.translationText,
+              }),
+              ...(updateData.translator !== undefined && {
+                translator: updateData.translator,
+              }),
+            },
+          );
+        } else {
+          await this.ayahTranslationRepository.save({
+            ayahGroupId: ayahGroup.id,
+            languageId: updateData.languageId,
+            translationText: updateData.translationText || '',
+            translator: updateData.translator || '',
+            status: 'active',
+          });
+        }
+      }
+
+      // Update or create tafsir
+      if (updateData.tafsirText !== undefined || updateData.tafsirScholar !== undefined) {
+        const existingTafsir = await this.ayahTafsirRepository.findOne({
+          where: {
+            ayahGroupId: ayahGroup.id,
+            languageId: updateData.languageId,
+          },
+        });
+
+        if (existingTafsir) {
+          await this.ayahTafsirRepository.update(
+            {
+              ayahGroupId: ayahGroup.id,
+              languageId: updateData.languageId,
+            },
+            {
+              ...(updateData.tafsirText !== undefined && {
+                tafsirText: updateData.tafsirText,
+              }),
+              ...(updateData.tafsirScholar !== undefined && {
+                scholar: updateData.tafsirScholar,
+              }),
+              ...(updateData.tafsirSource !== undefined && {
+                source: updateData.tafsirSource,
+              }),
+            },
+          );
+        } else {
+          await this.ayahTafsirRepository.save({
+            ayahGroupId: ayahGroup.id,
+            languageId: updateData.languageId,
+            tafsirText: updateData.tafsirText || '',
+            scholar: updateData.tafsirScholar || '',
+            source: updateData.tafsirSource || '',
+            status: 'active',
+          });
+        }
+      }
+
+    // Return updated content for the ayah group (single or multi)
+    return this.getAyahWithContent(surahId, ayahNumber, updateData.languageId);
   }
 }
