@@ -2,8 +2,8 @@ import { IsInt, IsUUID, IsOptional, IsArray, ValidateNested, IsString, Min } fro
 import { Type } from 'class-transformer';
 
 class AyahInfoItemDto {
-  @IsString()
-  languageId: string;
+  @IsInt()
+  languageId: number;
 
   @IsString()
   infoText: string;
@@ -14,8 +14,8 @@ class AyahInfoItemDto {
 }
 
 class AyahTafsirItemDto {
-  @IsString()
-  languageId: string;
+  @IsInt()
+  languageId: number;
 
   @IsString()
   tafsirText: string;
@@ -34,8 +34,8 @@ class AyahTafsirItemDto {
 }
 
 class AyahTranslationItemDto {
-  @IsString()
-  languageId: string;
+  @IsInt()
+  languageId: number;
 
   @IsString()
   translationText: string;

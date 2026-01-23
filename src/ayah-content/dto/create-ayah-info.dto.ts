@@ -32,10 +32,9 @@ export class CreateAyahInfoDto {
     description: 'Language ID (e.g., en, ar, ur)',
     example: 'en',
   })
-  @IsString()
+  @IsInt()
   @IsNotEmpty()
-  @MaxLength(10)
-  languageId: string;
+  languageId: number;
 
   @ApiProperty({
     description: 'Info text content',

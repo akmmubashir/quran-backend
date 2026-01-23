@@ -32,10 +32,9 @@ export class CreateAyahTranslationDto {
     description: 'Language ID',
     example: 'en',
   })
-  @IsString()
+  @IsInt()
   @IsNotEmpty()
-  @MaxLength(10)
-  languageId: string;
+  languageId: number;
 
   @ApiProperty({
     description: 'Translation text content',

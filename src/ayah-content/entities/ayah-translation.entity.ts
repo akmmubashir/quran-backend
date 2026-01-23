@@ -22,8 +22,8 @@ export class AyahTranslation {
   @Index()
   ayahGroupId: string;
 
-  @Column({ type: 'varchar', length: 10, name: 'language_id' })
-  languageId: string;
+  @Column({ type: 'int', name: 'language_id' })
+  languageId: number;
 
   @Column({ type: 'text', name: 'translation_text' })
   translationText: string;

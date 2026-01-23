@@ -32,10 +32,9 @@ export class CreateAyahTafsirDto {
     description: 'Language ID',
     example: 'en',
   })
-  @IsString()
+  @IsInt()
   @IsNotEmpty()
-  @MaxLength(10)
-  languageId: string;
+  languageId: number;
 
   @ApiProperty({
     description: 'Tafsir text content',
