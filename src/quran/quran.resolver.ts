@@ -191,9 +191,7 @@ export class QuranResolver {
   }
 
   @Query(() => Translation, { nullable: true })
-  async translationResource(
-    @Args('id', { type: () => Int }) id: number,
-  ) {
+  async translationResource(@Args('id', { type: () => Int }) id: number) {
     return this.service.getTranslationById(id);
   }
 

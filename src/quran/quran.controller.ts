@@ -434,9 +434,12 @@ export class QuranController {
   async getAyahWithContent(
     @Param('surahId', ParseIntPipe) surahId: number,
     @Param('ayahNumber', ParseIntPipe) ayahNumber: number,
-    @Query('languageId', ParseIntPipe) languageId?: number,
+    @Query('languageId') languageIdRaw?: string,
   ) {
     try {
+      const languageIdParsed = languageIdRaw ? Number(languageIdRaw) : undefined;
+      const languageId = Number.isFinite(languageIdParsed) ? languageIdParsed : undefined;
+
       return await this.service.getAyahWithContent(
         surahId,
         ayahNumber,
@@ -456,10 +459,13 @@ export class QuranController {
     @Query('surahId', ParseIntPipe) surahId: number,
     @Query('startAyah', ParseIntPipe) startAyah: number,
     @Query('endAyah', ParseIntPipe) endAyah: number,
-    @Query('languageId', new DefaultValuePipe(null), new ParseIntPipe({ optional: true })) languageId?: number,
+    @Query('languageId') languageIdRaw?: string,
   ) {
     try {
-      return await this.service.getAyahContentByGroup(surahId, startAyah, endAyah, languageId ?? undefined);
+      const languageIdParsed = languageIdRaw ? Number(languageIdRaw) : undefined;
+      const languageId = Number.isFinite(languageIdParsed) ? languageIdParsed : undefined;
+
+      return await this.service.getAyahContentByGroup(surahId, startAyah, endAyah, languageId);
     } catch (error) {
       throw new HttpException(
         error.message || 'Failed to fetch ayah content from tables',
@@ -468,3 +474,4 @@ export class QuranController {
     }
   }
 }
+
