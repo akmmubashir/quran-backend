@@ -175,7 +175,9 @@ export class AyahContentService {
     ayahNumber: number,
     languageCode?: string,
   ): Promise<AyahGroup | null> {
-    return await this.repository.findForAyah(surahId, ayahNumber, languageCode);
+    const parsed = languageCode ? Number(languageCode) : undefined;
+    const languageId = Number.isFinite(parsed) ? parsed : undefined;
+    return await this.repository.findForAyah(surahId, ayahNumber, languageId);
   }
 
   /**

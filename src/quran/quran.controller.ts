@@ -6,14 +6,17 @@ import {
   ParseIntPipe,
   DefaultValuePipe,
   Put,
+  Post,
   Body,
   HttpException,
   HttpStatus,
+  ValidationPipe,
 } from '@nestjs/common';
 import { QuranService } from './quran.service';
 import { UpdateSurahInfoDto } from './dto/update-surah-info.dto';
 import { UpdateAyahContentDto } from './dto/update-ayah-content.dto';
 import { UpdateAyahGroupDto } from './dto/update-ayah-group.dto';
+import { UpsertAyahContentDto } from '../ayah-content/dto/upsert-ayah-content.dto';
 
 @Controller()
 export class QuranController {
@@ -409,6 +412,48 @@ export class QuranController {
   }
 
   // ==================== Combined Ayah Content ====================
+
+  @Post('ayahs/content')
+  async createAyahContentRange(
+    @Body(
+      new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        transform: true,
+      }),
+    )
+    dto: UpsertAyahContentDto,
+  ) {
+    try {
+      return await this.service.upsertAyahContentRange(dto);
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Failed to create ayah content',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Put('ayahs/content')
+  async updateAyahContentRange(
+    @Body(
+      new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        transform: true,
+      }),
+    )
+    dto: UpsertAyahContentDto,
+  ) {
+    try {
+      return await this.service.upsertAyahContentRange(dto);
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Failed to update ayah content',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
 
   @Put('ayahs/:surahId/:ayahNumber')
   async updateAyahContent(

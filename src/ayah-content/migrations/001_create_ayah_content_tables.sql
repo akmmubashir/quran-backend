@@ -20,54 +20,54 @@ CREATE INDEX IF NOT EXISTS idx_ayah_groups_range ON ayah_groups(surah_id, start_
 CREATE TABLE IF NOT EXISTS ayah_tafsir (
     id SERIAL PRIMARY KEY,
     ayah_group_id UUID NOT NULL REFERENCES ayah_groups(id) ON DELETE CASCADE,
-    language_code VARCHAR(10) NOT NULL,
+    language_id INTEGER NOT NULL,
     tafsir_text TEXT NOT NULL,
     scholar VARCHAR(255),
     source VARCHAR(255),
     status VARCHAR(50) NOT NULL DEFAULT 'published',
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    CONSTRAINT unique_tafsir_per_group UNIQUE (ayah_group_id, language_code, source)
+    CONSTRAINT unique_tafsir_per_group UNIQUE (ayah_group_id, language_id)
 );
 
 -- Create indexes for ayah_tafsir
 CREATE INDEX IF NOT EXISTS idx_ayah_tafsir_group_id ON ayah_tafsir(ayah_group_id);
-CREATE INDEX IF NOT EXISTS idx_ayah_tafsir_language ON ayah_tafsir(language_code);
+CREATE INDEX IF NOT EXISTS idx_ayah_tafsir_language ON ayah_tafsir(language_id);
 CREATE INDEX IF NOT EXISTS idx_ayah_tafsir_status ON ayah_tafsir(status);
 
 -- Create ayah_translation table
 CREATE TABLE IF NOT EXISTS ayah_translation (
     id SERIAL PRIMARY KEY,
     ayah_group_id UUID NOT NULL REFERENCES ayah_groups(id) ON DELETE CASCADE,
-    language_code VARCHAR(10) NOT NULL,
+    language_id INTEGER NOT NULL,
     translation_text TEXT NOT NULL,
     translator VARCHAR(255) NOT NULL,
     status VARCHAR(50) NOT NULL DEFAULT 'published',
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    CONSTRAINT unique_translation_per_group UNIQUE (ayah_group_id, language_code, translator)
+    CONSTRAINT unique_translation_per_group UNIQUE (ayah_group_id, language_id)
 );
 
 -- Create indexes for ayah_translation
 CREATE INDEX IF NOT EXISTS idx_ayah_translation_group_id ON ayah_translation(ayah_group_id);
-CREATE INDEX IF NOT EXISTS idx_ayah_translation_language ON ayah_translation(language_code);
+CREATE INDEX IF NOT EXISTS idx_ayah_translation_language ON ayah_translation(language_id);
 CREATE INDEX IF NOT EXISTS idx_ayah_translation_status ON ayah_translation(status);
 
 -- Create ayah_info table
 CREATE TABLE IF NOT EXISTS ayah_info (
     id SERIAL PRIMARY KEY,
     ayah_group_id UUID NOT NULL REFERENCES ayah_groups(id) ON DELETE CASCADE,
-    language_code VARCHAR(10) NOT NULL,
+    language_id INTEGER NOT NULL,
     info_text TEXT NOT NULL,
     status VARCHAR(50) NOT NULL DEFAULT 'published',
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    CONSTRAINT unique_info_per_group UNIQUE (ayah_group_id, language_code)
+    CONSTRAINT unique_info_per_group UNIQUE (ayah_group_id, language_id)
 );
 
 -- Create indexes for ayah_info
 CREATE INDEX IF NOT EXISTS idx_ayah_info_group_id ON ayah_info(ayah_group_id);
-CREATE INDEX IF NOT EXISTS idx_ayah_info_language ON ayah_info(language_code);
+CREATE INDEX IF NOT EXISTS idx_ayah_info_language ON ayah_info(language_id);
 CREATE INDEX IF NOT EXISTS idx_ayah_info_status ON ayah_info(status);
 
 -- Create updated_at trigger function

@@ -30,7 +30,7 @@ export class AyahContentRepository {
   ): Promise<AyahGroup | null> {
     return await this.ayahGroupRepo.findOne({
       where: { surahId, startAyah, endAyah },
-      relations: ['tafsirs', 'translations', 'infos'],
+        relations: ['tafsirs', 'translations', 'ayahInfos'],
     });
   }
 
@@ -41,7 +41,7 @@ export class AyahContentRepository {
   async findForAyah(
     surahId: number,
     ayahNumber: number,
-    languageCode?: string,
+      languageId?: number,
   ): Promise<AyahGroup | null> {
     const queryBuilder = this.ayahGroupRepo
       .createQueryBuilder('group')
@@ -56,28 +56,28 @@ export class AyahContentRepository {
       .addOrderBy('(group.end_ayah - group.start_ayah)', 'ASC')
       .addOrderBy('group.created_at', 'DESC');
 
-    if (languageCode) {
+    if (languageId) {
       queryBuilder
         .leftJoinAndSelect(
           'group.tafsirs',
           'tafsir',
-          'tafsir.language_code = :languageCode',
-          { languageCode },
+          'tafsir.language_id = :languageId',
+          { languageId },
         )
         .leftJoinAndSelect(
           'group.translations',
           'translation',
-          'translation.language_code = :languageCode',
-          { languageCode },
+          'translation.language_id = :languageId',
+          { languageId },
         )
-        .leftJoinAndSelect('group.infos', 'info', 'info.language_code = :languageCode', {
-          languageCode,
+          .leftJoinAndSelect('group.ayahInfos', 'info', 'info.language_id = :languageId', {
+          languageId,
         });
     } else {
       queryBuilder
         .leftJoinAndSelect('group.tafsirs', 'tafsir')
         .leftJoinAndSelect('group.translations', 'translation')
-        .leftJoinAndSelect('group.infos', 'info');
+          .leftJoinAndSelect('group.ayahInfos', 'info');
     }
 
     return await queryBuilder.getOne();
@@ -89,7 +89,7 @@ export class AyahContentRepository {
   async findBySurah(surahId: number): Promise<AyahGroup[]> {
     return await this.ayahGroupRepo.find({
       where: { surahId },
-      relations: ['tafsirs', 'translations', 'infos'],
+        relations: ['tafsirs', 'translations', 'ayahInfos'],
       order: {
         startAyah: 'ASC',
         endAyah: 'ASC',
@@ -103,7 +103,7 @@ export class AyahContentRepository {
   async findById(id: string): Promise<AyahGroup | null> {
     return await this.ayahGroupRepo.findOne({
       where: { id },
-      relations: ['tafsirs', 'translations', 'infos'],
+        relations: ['tafsirs', 'translations', 'ayahInfos'],
     });
   }
 
@@ -157,7 +157,7 @@ export class AyahContentRepository {
       // Fetch complete entity with relations
       const result = await manager.findOne(AyahGroup, {
         where: { id: savedGroup.id },
-        relations: ['tafsirs', 'translations', 'infos'],
+          relations: ['tafsirs', 'translations', 'ayahInfos'],
       });
       if (!result) {
         throw new Error('Failed to create ayah group');

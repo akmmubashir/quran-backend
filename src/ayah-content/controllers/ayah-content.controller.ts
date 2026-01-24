@@ -379,6 +379,12 @@ export class AyahContentController {
     )
     combinedDto: CreateAyahCombinedContentDto,
   ) {
-    return await this.ayahContentService.createOrUpdateCombinedContent(combinedDto);
+    const normalizedDto = {
+      ...combinedDto,
+      // allow empty string to behave as undefined so single-ayah creation works
+      ayahGroupId: combinedDto.ayahGroupId || undefined,
+    };
+
+    return await this.ayahContentService.createOrUpdateCombinedContent(normalizedDto);
   }
 }
