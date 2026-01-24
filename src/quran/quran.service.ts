@@ -639,7 +639,7 @@ export class QuranService {
     for (const ayah of ayahsWithGroupInfo) {
       if (ayah.ayahGroupStart && ayah.ayahGroupEnd) {
         groupsToDelete.add(`${ayah.ayahGroupStart}-${ayah.ayahGroupEnd}`);
-        
+
         // Also need to ungroup ALL ayahs in each affected group, not just selected ones
         for (let i = ayah.ayahGroupStart; i <= ayah.ayahGroupEnd; i++) {
           allAyahsToUngroup.add(i);
@@ -651,7 +651,7 @@ export class QuranService {
     const deletedGroups: string[] = [];
     for (const groupKey of groupsToDelete) {
       const [start, end] = groupKey.split('-').map(Number);
-      
+
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const ayahGroup = await this.ayahGroupRepository.findOne({
         where: { surahId, startAyah: start, endAyah: end },
@@ -715,7 +715,8 @@ export class QuranService {
             ]
           : undefined,
       translations:
-        updateData.translationText !== undefined || updateData.translator !== undefined
+        updateData.translationText !== undefined ||
+        updateData.translator !== undefined
           ? [
               {
                 languageId: updateData.languageId,
@@ -725,7 +726,8 @@ export class QuranService {
             ]
           : undefined,
       tafsirs:
-        updateData.tafsirText !== undefined || updateData.tafsirScholar !== undefined
+        updateData.tafsirText !== undefined ||
+        updateData.tafsirScholar !== undefined
           ? [
               {
                 languageId: updateData.languageId,
@@ -960,7 +962,8 @@ export class QuranService {
             ]
           : undefined,
       translations:
-        updateData.translationText !== undefined || updateData.translator !== undefined
+        updateData.translationText !== undefined ||
+        updateData.translator !== undefined
           ? [
               {
                 languageId: updateData.languageId,
@@ -1041,12 +1044,22 @@ export class QuranService {
    * Upsert grouped or single-ayah content (info, tafsir, translation) in one request.
    */
   async upsertAyahContentRange(dto: UpsertAyahContentDto) {
-    const { surahId, startAyah, endAyah, isGrouped, status, infos, tafsirs, translations } = dto;
+    const {
+      surahId,
+      startAyah,
+      endAyah,
+      isGrouped,
+      status,
+      infos,
+      tafsirs,
+      translations,
+    } = dto;
 
     await this.validateAyahRangeExists(surahId, startAyah, endAyah);
 
     // Determine grouping flag when omitted
-    const groupedFlag = isGrouped !== undefined ? isGrouped : startAyah !== endAyah;
+    const groupedFlag =
+      isGrouped !== undefined ? isGrouped : startAyah !== endAyah;
     const statusValue = status || 'published';
 
     // Normalize child payloads so they always carry a status value
@@ -1088,62 +1101,80 @@ export class QuranService {
     }
 
     // Replace provided content atomically
-    const updatedGroup = await this.ayahGroupRepository.manager.transaction(async (manager) => {
-      await manager.update(
-        AyahGroup,
-        { id: group!.id },
-        {
-          ...(groupedFlag !== undefined ? { isGrouped: groupedFlag } : {}),
-          ...(statusValue ? { status: statusValue } : {}),
-        },
-      );
-
-      // Upsert infos (do not delete other languages)
-      if (normalizedInfos !== undefined && normalizedInfos.length > 0) {
-        await manager.getRepository(AyahInfo).upsert(
-          normalizedInfos.map((i) => ({ ...i, ayahGroupId: group!.id })),
-          ['ayahGroupId', 'languageId'],
+    const updatedGroup = await this.ayahGroupRepository.manager.transaction(
+      async (manager) => {
+        await manager.update(
+          AyahGroup,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          { id: group!.id },
+          {
+            ...(groupedFlag !== undefined ? { isGrouped: groupedFlag } : {}),
+            ...(statusValue ? { status: statusValue } : {}),
+          },
         );
-      }
 
-      // Upsert tafsirs (unique by group + language)
-      if (normalizedTafsirs !== undefined && normalizedTafsirs.length > 0) {
-        await manager.getRepository(AyahTafsir).upsert(
-          normalizedTafsirs.map((t) => ({ ...t, ayahGroupId: group!.id })),
-          ['ayahGroupId', 'languageId'],
-        );
-      }
+        // Upsert infos (do not delete other languages)
+        if (normalizedInfos !== undefined && normalizedInfos.length > 0) {
+          await manager.getRepository(AyahInfo).upsert(
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            normalizedInfos.map((i) => ({ ...i, ayahGroupId: group!.id })),
+            ['ayahGroupId', 'languageId'],
+          );
+        }
 
-      // Upsert translations (unique by group + language + translator)
-      if (normalizedTranslations !== undefined && normalizedTranslations.length > 0) {
-        await manager.getRepository(AyahTranslation).upsert(
-          normalizedTranslations.map((t) => ({ ...t, ayahGroupId: group!.id })),
-          ['ayahGroupId', 'languageId', 'translator'],
-        );
-      }
+        // Upsert tafsirs (unique by group + language)
+        if (normalizedTafsirs !== undefined && normalizedTafsirs.length > 0) {
+          await manager.getRepository(AyahTafsir).upsert(
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            normalizedTafsirs.map((t) => ({ ...t, ayahGroupId: group!.id })),
+            ['ayahGroupId', 'languageId'],
+          );
+        }
 
-      return manager.findOne(AyahGroup, {
-        where: { id: group!.id },
-        relations: ['ayahInfos', 'tafsirs', 'translations'],
-      });
-    });
+        // Upsert translations (unique by group + language + translator)
+        if (
+          normalizedTranslations !== undefined &&
+          normalizedTranslations.length > 0
+        ) {
+          await manager.getRepository(AyahTranslation).upsert(
+            normalizedTranslations.map((t) => ({
+              ...t,
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+              ayahGroupId: group!.id,
+            })),
+            ['ayahGroupId', 'languageId', 'translator'],
+          );
+        }
+
+        return manager.findOne(AyahGroup, {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          where: { id: group!.id },
+          relations: ['ayahInfos', 'tafsirs', 'translations'],
+        });
+      },
+    );
 
     const groupWithRelations =
       updatedGroup ??
       (await this.ayahGroupRepository.findOne({
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         where: { id: group.id },
         relations: ['ayahInfos', 'tafsirs', 'translations'],
       }));
 
     return {
       success: true,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       groupId: group.id,
       surahId,
       startAyah,
       endAyah,
       isGrouped: groupedFlag,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       ayahInfo: groupWithRelations?.ayahInfos ?? [],
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       ayahTranslation: groupWithRelations?.translations ?? [],
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       ayahTafsir: groupWithRelations?.tafsirs ?? [],
     };
   }
