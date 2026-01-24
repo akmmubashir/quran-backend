@@ -615,36 +615,72 @@ export class QuranService {
       throw new Error('At least 1 ayah is required to remove group');
     }
 
-    // Find and delete the ayah group based on provided range (min/max)
-    const sorted = [...ayahNumbers].sort((a, b) => a - b);
-    const minAyah = sorted[0];
-    const maxAyah = sorted[sorted.length - 1];
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const ayahGroup = await this.ayahGroupRepository.findOne({
-      where: { surahId, startAyah: minAyah, endAyah: maxAyah },
+    // First, find all groups that contain any of the selected ayahs
+    // by checking the Ayah table for their ayahGroupStart/ayahGroupEnd
+    const ayahsWithGroupInfo = await prisma.ayah.findMany({
+      where: {
+        surahId,
+        ayahNumber: { in: ayahNumbers },
+        ayahGroupStart: { not: null },
+        ayahGroupEnd: { not: null },
+      },
+      select: {
+        ayahNumber: true,
+        ayahGroupStart: true,
+        ayahGroupEnd: true,
+      },
     });
 
-    if (ayahGroup) {
-      await this.ayahGroupRepository.remove(ayahGroup);
+    // Collect unique groups to delete
+    const groupsToDelete = new Set<string>();
+    const allAyahsToUngroup = new Set<number>();
+
+    for (const ayah of ayahsWithGroupInfo) {
+      if (ayah.ayahGroupStart && ayah.ayahGroupEnd) {
+        groupsToDelete.add(`${ayah.ayahGroupStart}-${ayah.ayahGroupEnd}`);
+        
+        // Also need to ungroup ALL ayahs in each affected group, not just selected ones
+        for (let i = ayah.ayahGroupStart; i <= ayah.ayahGroupEnd; i++) {
+          allAyahsToUngroup.add(i);
+        }
+      }
     }
 
-    // Update all ayahs to remove grouping (using raw SQL to avoid type issues)
-    // Update all ayahs to remove grouping (backward compatibility)
-    await prisma.$executeRaw`
-      UPDATE "Ayah"
-      SET "ayahGroupStart" = NULL, "ayahGroupEnd" = NULL
-      WHERE "surahId" = ${surahId}
-        AND "ayahNumber" = ANY(${ayahNumbers})
-    `;
+    // Delete each group from ayah_groups table
+    const deletedGroups: string[] = [];
+    for (const groupKey of groupsToDelete) {
+      const [start, end] = groupKey.split('-').map(Number);
+      
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const ayahGroup = await this.ayahGroupRepository.findOne({
+        where: { surahId, startAyah: start, endAyah: end },
+      });
+
+      if (ayahGroup) {
+        await this.ayahGroupRepository.remove(ayahGroup);
+        deletedGroups.push(groupKey);
+      }
+    }
+
+    // Update all ayahs in all affected groups to remove grouping
+    const ayahsToUpdate = Array.from(allAyahsToUngroup);
+    if (ayahsToUpdate.length > 0) {
+      await prisma.$executeRaw`
+        UPDATE "Ayah"
+        SET "ayahGroupStart" = NULL, "ayahGroupEnd" = NULL
+        WHERE "surahId" = ${surahId}
+          AND "ayahNumber" = ANY(${ayahsToUpdate})
+      `;
+    }
 
     return {
       success: true,
-      message: `Successfully ungrouped ayahs in surah ${surahId}`,
+      message: `Successfully ungrouped ${deletedGroups.length} group(s) in surah ${surahId}`,
       data: {
         surahId,
-        ayahNumbers,
-        ungroupedCount: ayahNumbers.length,
+        selectedAyahs: ayahNumbers,
+        deletedGroups,
+        ungroupedAyahCount: ayahsToUpdate.length,
       },
     };
   }
